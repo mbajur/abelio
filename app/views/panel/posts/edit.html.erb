@@ -1,0 +1,54 @@
+<%
+  # sketch_of = @post.sketch_of
+  # title = if @post.sketch_of.initialized?
+  #           "New Post"
+  #         elsif @post.sketch_of.draft?
+  #           "Edit Draft"
+  #         else
+  #           "Edit Post"
+  #         end
+  # publish_label = if @post.sketch_of.published?
+  #                   "Publish changes"
+  #                 else
+  #                   "Publish"
+  #                 end
+  title = 'Edit'
+  publish_label = 'Publish'
+%>
+<%= render(PageComponent.new(title: title)) do |page| %>
+  <% page.with_subtitle do %>
+    Changes saving automatically
+  <% end %>
+
+  <% page.with_action do %>
+    <%= link_to "Back", panel_post_path(@original_post), class: 'mr-4 text-sm' %>
+
+    <%= button_to panel_post_path(@post), method: :patch, class: 'text-sm bg-black text-white text-center p-4 py-2 gap-2 inline-flex items-center justify-center' do %>
+      <%= tabler_icon :send, size: 16 %> <%= publish_label %>
+    <% end %>
+
+    <% if policy(@post.sketch_of || @post).create_draft? %>
+      <%= button_to panel_post_path(@post), method: :patch, params: { create_draft: true }, class: 'text-sm bg-black text-white text-center p-4 py-2 gap-2 inline-flex items-center justify-center' do %>
+        <%= tabler_icon :pencil, size: 16 %> Save draft
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <div class="mt-4" id="<%= dom_id(@post, :blocks_editor) %>">
+    <div id="<%= dom_id(@post, :blocks) %>">
+      <% @post.blocks.where(depth: 0).each do |block| %>
+        <%= render block %>
+      <% end %>
+    </div>
+
+    <div class="flex gap-2 mt-4 justify-center">
+      <%= button_to panel_post_blocks_path(@post), method: :post, params: { blockable_type: 'Block::RichText' }, class: 'bg-black text-white rounded-full w-10 h-10 text-center flex justify-center items-center' do %>
+        <%= tabler_icon :text_size, size: 20 %>
+      <% end %>
+
+      <%= button_to panel_post_blocks_path(@post), method: :post, params: { blockable_type: 'Block::ImageSet' }, class: 'bg-black text-white rounded-full w-10 h-10 text-center flex justify-center items-center' do %>
+        <%= tabler_icon :photo_circle, size: 20 %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

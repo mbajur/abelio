@@ -1,0 +1,35 @@
+<% @max_width = '7xl' %>
+
+<%= render(PageComponent.new(title: 'Design')) do |page| %>
+  <p class="mt-4 mb-4">Here you can customize the design of your blog. Choose from a variety of templates and themes to make your blog look unique and appealing to your readers.</p>
+
+  <%= link_to 'New Template +', new_panel_blog_template_path, class: 'btn btn-primary' %>
+
+  <ul class="mt-4">
+    <% @templates.each do |template| %>
+      <li class="border-t py-2 flex items-center">
+        <div class="flex-1">
+          <%= link_to template.name, edit_panel_blog_template_path(template) %>
+
+          <% if current_site.template_id == template.id %>
+            <span class="text-gray-500 text-sm">(current)</span>
+          <% end %>
+        </div>
+
+        <div class="text-right">
+          <div class="flex gap-4 text-sm">
+            <%= link_to 'Edit', edit_panel_blog_template_path(template) %>
+
+            <% if policy(template).delete? %>
+              <%= link_to 'Delete', panel_blog_template_path(template), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-red-500' %>
+            <% end %>
+          </div>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+
+  <% page.with_sidebar do %>
+    <%= render 'panel/blog/sidebar' %>
+  <% end %>
+<% end %>

@@ -1,0 +1,9 @@
+<% @max_width = '7xl' %>
+
+<%= render(PageComponent.new) do |page| %>
+  <%= render collection: @posts, partial: 'panel/posts/post', as: :post %>
+
+  <% page.with_sidebar do %>
+    <%= render 'panel/blog/sidebar' %>
+  <% end %>
+<% end %>

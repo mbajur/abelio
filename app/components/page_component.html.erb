@@ -1,0 +1,29 @@
+<div class="<%= main_classes %>">
+  <% if @title %>
+    <div class="border-b flex items-center">
+      <h1 class="text-2xl h-12 flex-1 flex items-center">
+        <%= @title %>
+
+        <% if subtitle? %>
+          <small class="text-xs text-gray-500 ml-4 pt-2" id="page-subtitle">
+            <%= subtitle %>
+          </small>
+        <% end %>
+      </h1>
+
+      <div class="flex items-center gap-2">
+        <% actions.each do |action| %>
+          <%= action %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%= content %>
+</div>
+
+<% if sidebar? %>
+  <div class="col-span-2 py-4">
+    <%= sidebar %>
+  </div>
+<% end %>

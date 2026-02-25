@@ -1,0 +1,28 @@
+<turbo-frame id="<%= turbo_frame_id %>" class="grid grid-cols-6 w-full border-b py-4 px-2">
+  <span class="font-bold col-span-2"><%= @label %></span>
+
+  <div class="col-span-4">
+    <% if params[:edit] == @key.to_s %>
+      <%= form %>
+
+      <div class="flex gap-2 mt-2">
+        <%= button_to "Cancel", url_for, method: :get, class: 'bg-gray-200 px-3 py-1', params: { edit: nil } %>
+        <button class="bg-black text-white px-3 py-1" type="submit" form="edit_<%= @key %>" data-turbo-submits-with="Saving...">Save</button>
+      </div>
+    <% else %>
+      <div class="grid grid-cols-6 gap-4">
+        <div class="<%= preview_classes %>">
+          <%= preview %>
+        </div>
+
+        <% if @editable %>
+          <div class="col-span-1 text-right text-gray-500">
+            <%= button_to url_for, method: :get, params: { edit: @key } do %>
+              <%= helpers.tabler_icon :pencil, size: 20 %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</turbo-frame>

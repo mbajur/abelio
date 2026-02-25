@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Abelio" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Abelio">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <div class="grid grid-cols-12 mx-auto max-w-<%= @max_width || '7xl' %> h-screen">
+      <div class="<% if @col_start %>col-start-<%= @col_start %><% end %> col-span-2">
+        <div class="flex flex-col sticky top-0 h-screen py-4">
+          <div class="mb-4 ml-4">
+            <span class="text-xl font-bold block"><%= current_site.name %></span>
+            <span class="text-sm text-gray-600">@mbajur.com</span>
+          </div>
+
+          <ul class="mb-10 flex-1">
+            <li>
+              <%= active_link_to panel_root_path, active: :exclusive, class: 'flex gap-2 items-center py-2 px-4 hover:bg-gray-50', class_inactive: 'text-gray-500' do %>
+                <%= tabler_icon :home, size: 20 %> Home
+              <% end %>
+            </li>
+            <li>
+              <%= link_to main_app.panel_root_path, class: 'flex gap-2 items-center py-2 px-4 text-gray-500 hover:bg-gray-50' do %>
+                <%= tabler_icon :bolt, size: 20 %> Activity
+              <% end %>
+            </li>
+            <li>
+              <%= active_link_to panel_blog_root_path, class: 'flex gap-2 items-center py-2 px-4 hover:bg-gray-50', class_inactive: 'text-gray-500' do %>
+                <%= tabler_icon :book, size: 20 %> Blog
+              <% end %>
+            </li>
+            <li>
+              <%= link_to main_app.panel_root_path, class: 'flex gap-2 items-center py-2 px-4 text-gray-500 hover:bg-gray-50' do %>
+                <%= tabler_icon :message, size: 20 %> Messages
+              <% end %>
+            </li>
+            <li>
+              <%= link_to main_app.panel_root_path, class: 'flex gap-2 items-center py-2 px-4 text-gray-500 hover:bg-gray-50' do %>
+                <%= tabler_icon :user, size: 20 %> Account
+              <% end %>
+            </li>
+            <li>
+              <%= active_link_to edit_panel_settings_path, class: 'flex gap-2 items-center py-2 px-4 hover:bg-gray-50', class_inactive: 'text-gray-500' do %>
+                <%= tabler_icon :settings, size: 20 %> Settings
+              <% end %>
+            </li>
+          </ul>
+
+          <div class="px-4">
+            <%= link_to new_panel_post_path, class: 'bg-black text-white text-center block p-4 py-2 gap-2 flex items-center justify-center' do %>
+              <%= tabler_icon :circle_plus, size: 20 %> Create
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <%= yield %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<%= form_with model: [:panel, :blog, template], builder: AbelioFormBuilder do |form| %>
+  <% if template.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(template.errors.count, "error") %> prohibited this template from being saved:</h2>
+      <ul>
+        <% template.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-4">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :markup %>
+    <%= form.text_area :markup, rows: 12 %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit 'Save' %>
+  </div>
+<% end %>

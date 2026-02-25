@@ -1,0 +1,6 @@
+<% @max_width = '7xl' %>
+<% @col_start = 2 %>
+
+<%= render(PageComponent.new) do %>
+  <%= render collection: @posts, partial: 'panel/posts/post', as: :post %>
+<% end %>

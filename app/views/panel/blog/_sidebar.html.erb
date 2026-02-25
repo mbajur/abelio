@@ -1,0 +1,32 @@
+<div class="px-4 mb-4">
+  <a href="#" class="bg-black text-white text-center block p-4 py-2 gap-2 flex items-center justify-center mb-4">
+    <%= tabler_icon :eye, size: 24 %> View blog
+              </a>
+  <p class="text-sm">Here, you can manage your blog posts and settings related to your blog.</p>
+</div>
+
+<ul>
+  <li>
+    <%= active_link_to 'Posts', panel_blog_posts_path, class: 'hover:bg-gray-100 py-2 px-4 block', class_inactive: 'text-gray-500' %>
+  </li>
+
+  <li>
+    <a href="#" class="text-gray-500 hover:bg-gray-100 py-2 px-4 block">Followers</a>
+  </li>
+
+  <li>
+    <a href="#" class="text-gray-500 hover:bg-gray-100 py-2 px-4 block">Following</a>
+  </li>
+
+  <li>
+    <%= active_link_to 'Drafts', panel_blog_drafts_path, class: 'hover:bg-gray-100 py-2 px-4 block', class_inactive: 'text-gray-500' %>
+  </li>
+
+  <li>
+    <a href="#" class="text-gray-500 hover:bg-gray-100 py-2 px-4 block">Activity</a>
+  </li>
+
+  <li>
+    <%= active_link_to 'Design', panel_blog_templates_path, class: 'hover:bg-gray-100 py-2 px-4 block', class_inactive: 'text-gray-500' %>
+  </li>
+</ul>

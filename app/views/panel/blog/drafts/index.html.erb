@@ -1,0 +1,14 @@
+<% @max_width = '7xl' %>
+
+<%= render(PageComponent.new) do |page| %>
+  <%= render collection: @posts, partial: 'panel/posts/post', as: :post %>
+
+  <div class="py-20 text-center">
+    <h4>Nothing here</h4>
+    <p class="text-xs">You have no drafts yet.</p>
+  </div>
+
+  <% page.with_sidebar do %>
+    <%= render 'panel/blog/sidebar' %>
+  <% end %>
+<% end %>

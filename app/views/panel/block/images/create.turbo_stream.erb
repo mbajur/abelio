@@ -1,0 +1,7 @@
+<turbo-stream action="update" target="<%= dom_id(@parent) %>">
+  <template>
+    <%= render partial: "panel/blocks/block", locals: { block: @parent }, formats: [:html] %>
+  </template>
+</turbo-stream>
+
+<%= render 'panel/posts/subtitle_updated_at' %>

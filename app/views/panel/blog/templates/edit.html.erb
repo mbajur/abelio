@@ -1,0 +1,13 @@
+<% @max_width = '7xl' %>
+
+<%= render(PageComponent.new(title: 'Edit Template')) do |page| %>
+  <%= render "form", template: @template %>
+
+  <div class="mt-4">
+    <%= link_to "Back", panel_blog_templates_path %>
+  </div>
+
+  <% page.with_sidebar do %>
+    <%= render 'panel/blog/sidebar' %>
+  <% end %>
+<% end %>

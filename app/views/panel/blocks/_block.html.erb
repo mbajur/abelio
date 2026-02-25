@@ -1,0 +1,5 @@
+<turbo-frame id="<%= dom_id(block) %>" class="block mb-4 relative">
+  <%= render "panel/#{block.blockable.to_partial_path}", block: block, formats: [:html] %>
+
+  <%= button_to "Delete", panel_post_block_path(block.resource, block), method: :delete, data: { turbo_confirm: "Remove this row and all it's children?" }, class: 'absolute right-2 bottom-2 p-1 text-red-500 text-xs hover:bg-red-500 hover:text-white' %>
+</turbo-frame>

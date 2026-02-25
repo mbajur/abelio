@@ -1,0 +1,70 @@
+<% @max_width = '7xl' %>
+<% @col_start = 2 %>
+
+<%= render(PageComponent.new(title: "Settings", main_classes: "col-span-5")) do %>
+	<%= render(FormGroupComponent.new(key: :name, editable: true)) do |group| %>
+		<% group.with_preview do %>
+			<%= @site.name %>
+		<% end %>
+
+		<% group.with_form do %>
+			<%= form_with model: @site, url: panel_settings_path, id: :edit_name, builder: AbelioFormBuilder do |form| %>
+				<input type="hidden" name="edit" value="name" />
+				<%= form.text_field :name %>
+				<%= form.object.errors.full_messages.to_sentence %>
+			<% end %>
+		<% end %>
+	<% end %>
+
+	<%= render(FormGroupComponent.new(key: :logo, editable: true)) do |group| %>
+		<% group.with_preview do %>
+			<% if @site.logo %>
+				<%= image_tag @site.logo_url, size: 150, class: 'rounded-full' %>
+			<% end %>
+
+			<p class="text-xs text-gray-500 mt-2">Logo is used as an avatar for your website across the Fediverse. Usually displayed as circle next to your posts and comments.</p>
+		<% end %>
+
+		<% group.with_form do %>
+			<%= form_with model: @site, url: panel_settings_path, id: :edit_logo, builder: AbelioFormBuilder do |form| %>
+				<input type="hidden" name="edit" value="logo" />
+				<%= form.hidden_field :image, value: @site.cached_logo_data, id: nil %>
+				<%= form.file_field :logo, class: 'border' %>
+				<%= form.object.errors.full_messages.to_sentence %>
+			<% end %>
+		<% end %>
+	<% end %>
+
+	<%= render(FormGroupComponent.new(key: :summary, editable: true)) do |group| %>
+		<% group.with_preview do %>
+			<%= @site.summary %>
+		<% end %>
+
+		<% group.with_form do %>
+			<%= form_with model: @site, url: panel_settings_path, id: :edit_summary, builder: AbelioFormBuilder do |form| %>
+				<input type="hidden" name="edit" value="summary" />
+				<%= form.text_area :summary %>
+				<%= form.object.errors.full_messages.to_sentence %>
+			<% end %>
+		<% end %>
+	<% end %>
+
+	<%= render(FormGroupComponent.new(key: :template, editable: true)) do |group| %>
+		<% group.with_preview do %>
+			<%= @site.template&.name %>
+
+			<p class="text-xs text-gray-500 mt-2">
+				Configure which template should be used when presenting your blog to your audience.
+				<%= link_to "Manage templates ↗", panel_blog_templates_path, class: 'text-blue-500', target: '_top' %>
+			</p>
+		<% end %>
+
+		<% group.with_form do %>
+			<%= form_with model: @site, url: panel_settings_path, id: :edit_template, builder: AbelioFormBuilder do |form| %>
+				<input type="hidden" name="edit" value="template" />
+				<%= form.collection_select :template_id, ::Template.all, :id, :name %>
+				<%= form.object.errors.full_messages.to_sentence %>
+			<% end %>
+		<% end %>
+	<% end %>
+<% end %>
