@@ -61,7 +61,7 @@ group :development do
   gem "dotenv"
 end
 
-# gem "federails", "~> 0.8.0"
+gem "federails", "~> 0.8.0"
 
 gem "shrine", "~> 3.6"
 
