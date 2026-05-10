@@ -42,6 +42,10 @@ class Post < ApplicationRecord
     sketch? || draft? || initialized?
   end
 
+  def update_likes_count!
+    update! likes_count: Federrails::Activity.where(action: "Like", entity: self).count
+  end
+
   private
 
   def create_federails_activity(action)
