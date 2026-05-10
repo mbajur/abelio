@@ -43,7 +43,7 @@ class Post < ApplicationRecord
   end
 
   def update_likes_count!
-    update! likes_count: Federrails::Activity.where(action: "Like", entity: self).count
+    update! likes_count: Federails::Activity.where(action: "Like", entity: self).count
   end
 
   private
