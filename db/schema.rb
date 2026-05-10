@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_22_220810) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_10_165829) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -85,9 +85,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_220810) do
   create_table "federails_activities", force: :cascade do |t|
     t.string "action", null: false
     t.integer "actor_id", null: false
+    t.string "cc"
     t.datetime "created_at", null: false
     t.integer "entity_id", null: false
     t.string "entity_type", null: false
+    t.string "to"
     t.datetime "updated_at", null: false
     t.string "uuid"
     t.index ["actor_id"], name: "index_federails_activities_on_actor_id"
@@ -133,6 +135,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_220810) do
     t.index ["actor_id"], name: "index_federails_followings_on_actor_id"
     t.index ["target_actor_id"], name: "index_federails_followings_on_target_actor_id"
     t.index ["uuid"], name: "index_federails_followings_on_uuid", unique: true
+  end
+
+  create_table "federails_hosts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "domain", null: false
+    t.string "nodeinfo_url"
+    t.text "protocols", default: "[]"
+    t.text "services", default: "{}"
+    t.string "software_name"
+    t.string "software_version"
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_federails_hosts_on_domain", unique: true
   end
 
   create_table "posts", force: :cascade do |t|
