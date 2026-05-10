@@ -4,13 +4,13 @@ class Federails::LikeActivityHandler
     actor = Federails::Actor.find_or_create_by_object activity["actor"]
     object = Fediverse::Request.dereference(activity["object"])
 
-    entity = begin
-      Federails::Actor.find_by_federation_url(object["id"])&.entity
-    rescue ActiveRecord::RecordNotFound
-      Federails::Utils::Object.find_or_create!(object)
-    end
-    raise ActiveRecord::RecordNotFound unless entity
+    object_id = object["id"]
+    raise "Not a local ID" unless Federails::Utils::Host.local_route?(object_id)
 
+    local_route = Federails::Utils::Host.local_route(object_id)
+    raise ActiveRecord::RecordNotFound unless local_route[:controller] == "federails/server/published" && local_route[:action] == "show" && local_route[:publishable_type] == "posts"
+
+    entity = Post.find(local_route[:id])
     Federails::Activity.create! actor: actor, action: "Like", entity: entity
 
     entity.update_likes_count!

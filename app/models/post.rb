@@ -49,7 +49,7 @@ class Post < ApplicationRecord
   private
 
   def create_federails_activity(action)
-    # manually_create_federails_activity(action)
+    manually_create_federails_activity(action)
   end
 
   def manually_create_federails_activity(action)
