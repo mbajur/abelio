@@ -9,9 +9,11 @@
     import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.3.0';
   </script>
 
-  {% if activity_pub.guid %}
-  <link href='{{ activity_pub.guid }}' rel='alternate' type='application/activity+json'>
+  {% if post %}
+    <link href='{{ post.federated_url }}' rel='alternate' type='application/activity+json'>
   {% endif %}
+
+  <link href="{{ site.federated_url }}" rel="alternate" type="application/activity+json">
 </head>
 
 <body>

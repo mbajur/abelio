@@ -32,4 +32,7 @@ Rails.application.routes.draw do
 
     root to: "dashboard#index"
   end
+
+  resources :posts, path: :posts, controller: "public/posts", only: [ :index, :show ]
+  root to: "public/posts#index"
 end

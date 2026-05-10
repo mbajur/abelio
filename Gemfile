@@ -76,3 +76,7 @@ gem "view_component", "~> 4.4"
 gem "active_link_to", "~> 1.0"
 
 gem "pundit", "~> 2.5"
+
+gem "pagy", "~> 43.5"
+
+gem "liquid", "~> 5.12"
