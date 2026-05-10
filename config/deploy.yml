@@ -2,7 +2,7 @@
 service: abelio
 
 # Name of the container image (use your-user/app-name on external registries).
-image: abelio
+image: mbajur/abelio
 
 # Deploy to these servers.
 servers:
