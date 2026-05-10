@@ -13,6 +13,22 @@ class Site < ApplicationRecord
 
   validates :name, presence: true
 
+  def to_activitypub_object
+    data = {
+      summary: summary
+    }
+
+    if logo.present?
+      data[:icon] = {
+        type: "Image",
+        url: logo.url,
+        "mediaType" => logo.mime_type
+      }
+    end
+
+    data
+  end
+
   private
 
   # Creates the actor or destroys it, depending on the condition
