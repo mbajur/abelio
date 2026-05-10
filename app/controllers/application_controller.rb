@@ -12,6 +12,6 @@ class ApplicationController < ActionController::Base
   private
 
   def current_site
-    @current_site ||= Site.find_by!(domain: request.host) || Site.first
+    @current_site ||= Site.find_by!(domain: request.host)
   end
 end
