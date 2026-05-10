@@ -11,8 +11,8 @@ class Federails::LikeActivityHandler
     raise ActiveRecord::RecordNotFound unless local_route[:controller] == "federails/server/published" && local_route[:action] == "show" && local_route[:publishable_type] == "posts"
 
     entity = Post.find(local_route[:id])
-    Federails::Activity.create! actor: actor, action: "Like", entity: entity
+    Federails::Activity.find_or_create_by! actor: actor, action: "Like", entity: entity # @todo: this doesn't work, it creates new activity even if old already exists
 
-    entity.update_likes_count!
+    entity.update_likes_count! # @todo: do not trigger Federails::NotifyInboxJob
   end
 end
