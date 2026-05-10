@@ -23,5 +23,5 @@ test:
 production:
   <<: *defaults
   force_ssl: true
-  # site_port: 443
+  site_port:
   site_host: https://<%= ENV.fetch('DOMAIN') %>
