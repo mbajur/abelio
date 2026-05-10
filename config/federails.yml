@@ -23,3 +23,4 @@ production:
   <<: *defaults
   force_ssl: true
   site_port: 443
+  site_host: https://aptest4.mbajur.com
