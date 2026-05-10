@@ -2,6 +2,8 @@ module Public
   class PostsController < ApplicationController
     include Pagy::Method
 
+    allow_unauthenticated_access
+
     def index
       headers["Content-Type"] = "text/html"
 
