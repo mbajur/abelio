@@ -21,7 +21,7 @@ class Site < ApplicationRecord
     if logo.present?
       data[:icon] = {
         type: "Image",
-        url: logo.url,
+        url: logo_url,
         "mediaType" => logo.mime_type
       }
     end
