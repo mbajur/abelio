@@ -25,13 +25,13 @@ class Post < ApplicationRecord
   after_commit :touch_published_at, on: :update, if: -> { saved_change_to_state? && published? }
 
   def to_activitypub_object
-    ::Federails::DataTransformer::Note.to_federation self, content: content
+    # ::Federails::DataTransformer::Note.to_federation self, content: content
+    ::Federails::DataTransformer::Note.to_federation self, content: "Hardcoded content"
   end
 
   def self.from_activitypub_object(hash)
     {
-      # content: hash["content"]
-      content: "Hardcoded content"
+      content: hash["content"]
     }
   end
 
