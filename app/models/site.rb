@@ -5,17 +5,13 @@ class Site < ApplicationRecord
   after_create :create_federails_actor
   after_update :create_federails_actor!
 
-  acts_as_federails_actor username_field: :username,
+  acts_as_federails_actor username_field: :domain,
                           name_field: :name
 
   has_many :posts, dependent: :destroy
   belongs_to :template
 
   validates :name, presence: true
-
-  def username
-    "_"
-  end
 
   private
 
