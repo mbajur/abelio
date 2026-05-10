@@ -58,15 +58,14 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
   gem "bullet"
+  gem "dotenv"
 end
 
-gem "federails", "~> 0.7.0"
+# gem "federails", "~> 0.8.0"
 
 gem "shrine", "~> 3.6"
 
 gem "fastimage", "~> 2.4"
-
-gem "openssl", "~> 4.0"
 
 gem "awesome_nested_set", "~> 3.9"
 
