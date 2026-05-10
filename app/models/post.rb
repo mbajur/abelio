@@ -30,7 +30,8 @@ class Post < ApplicationRecord
 
   def self.from_activitypub_object(hash)
     {
-      content: hash["content"]
+      # content: hash["content"]
+      content: "Hardcoded content"
     }
   end
 
