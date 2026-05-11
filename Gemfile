@@ -69,7 +69,7 @@ group :development do
   gem "bullet"
 end
 
-gem "federails", "~> 0.8.0", git: "git@gitlab.com:experimentslabs/federails.git"
+gem "federails", "~> 0.8.0", git: "https://gitlab.com/experimentslabs/federails.git"
 
 gem "shrine", "~> 3.6"
 
