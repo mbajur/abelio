@@ -55,16 +55,21 @@ group :development, :test do
 
   gem "rspec-rails", "~> 8.0.0"
   gem "factory_bot_rails"
+  gem "webmock"
+  gem "faker"
 end
 
-group :development do
+group :development, :test do
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "web-console"
-  gem "bullet"
   gem "dotenv"
 end
 
-gem "federails", "~> 0.8.0"
+group :development do
+  gem "web-console"
+  gem "bullet"
+end
+
+gem "federails", "~> 0.8.0", git: "git@gitlab.com:experimentslabs/federails.git"
 
 gem "shrine", "~> 3.6"
 

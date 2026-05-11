@@ -1,3 +1,17 @@
+GIT
+  remote: git@gitlab.com:experimentslabs/federails.git
+  revision: d1a6a237b70987561c59f3c306c2d6b056dcb47e
+  specs:
+    federails (0.8.0)
+      faraday
+      faraday-follow_redirects
+      jbuilder (~> 2.7)
+      json-ld (>= 3.2.0)
+      json-ld-preloaded (>= 3.2.0)
+      kaminari (>= 1.2.0)
+      pundit (>= 2.3.0)
+      rails (>= 7.0.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -103,6 +117,9 @@ GEM
     concurrent-ruby (1.3.6)
     connection_pool (3.0.2)
     content_disposition (1.0.0)
+    crack (1.0.1)
+      bigdecimal
+      rexml
     crass (1.0.6)
     date (3.5.1)
     debug (1.11.1)
@@ -123,6 +140,8 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
+    faker (3.8.0)
+      i18n (>= 1.8.11, < 2)
     faraday (2.14.1)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -132,15 +151,6 @@ GEM
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
     fastimage (2.4.0)
-    federails (0.8.0)
-      faraday
-      faraday-follow_redirects
-      jbuilder (~> 2.7)
-      json-ld (>= 3.2.0)
-      json-ld-preloaded (>= 3.2.0)
-      kaminari (>= 1.2.0)
-      pundit (>= 2.3.0)
-      rails (>= 7.0.4)
     ffi (1.17.3-aarch64-linux-gnu)
     ffi (1.17.3-aarch64-linux-musl)
     ffi (1.17.3-arm-linux-gnu)
@@ -153,6 +163,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.3.0)
       activesupport (>= 6.1)
+    hashdiff (1.2.1)
     htmlentities (4.4.2)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
@@ -458,6 +469,10 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webmock (3.26.2)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     websocket-driver (0.8.0)
       base64
       websocket-extensions (>= 0.1.0)
@@ -487,8 +502,9 @@ DEPENDENCIES
   debug
   dotenv
   factory_bot_rails
+  faker
   fastimage (~> 2.4)
-  federails (~> 0.8.0)
+  federails (~> 0.8.0)!
   image_processing (~> 1.2)
   importmap-rails
   jbuilder
@@ -513,6 +529,7 @@ DEPENDENCIES
   tzinfo-data
   view_component (~> 4.4)
   web-console
+  webmock
 
 BUNDLED WITH
    2.6.9

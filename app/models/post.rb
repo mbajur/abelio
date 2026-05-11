@@ -26,7 +26,7 @@ class Post < ApplicationRecord
 
   def to_activitypub_object
     # ::Federails::DataTransformer::Note.to_federation self, content: content
-    ::Federails::DataTransformer::Note.to_federation self, content: "Hardcoded content"
+    ::Federails::DataTransformer::Note.to_federation self, content: "Hardcoded content" # @todo unhardcode it
   end
 
   def self.from_activitypub_object(hash)
@@ -52,11 +52,12 @@ class Post < ApplicationRecord
     manually_create_federails_activity(action)
   end
 
+  # @todo this is being called when likes counter is updated, it can't work like that
   def manually_create_federails_activity(action)
-    ensure_federails_configuration!
-    return unless local_federails_entity? && send(federails_data_configuration[:should_federate_method])
+    # ensure_federails_configuration!
+    # return unless local_federails_entity? && send(federails_data_configuration[:should_federate_method])
 
-    ::Federails::Activity.create! actor: federails_actor, action: action, entity: self
+    # ::Federails::Activity.create! actor: federails_actor, action: action, entity: self
   end
 
   def touch_published_at

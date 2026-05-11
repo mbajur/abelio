@@ -18,6 +18,24 @@ describe Federation::LikeActivityHandler do
       }
     end
 
+    let(:remote_actor_hash) do
+      {
+        id: remote_actor_url,
+        type: "Person",
+        name: "Alice",
+        preferred_username: "alice",
+        inbox: "https://remote.example.com/users/alice/inbox",
+        outbox: "https://remote.example.com/users/alice/outbox",
+        followers: "https://remote.example.com/users/alice/followers",
+        following: "https://remote.example.com/users/alice/following",
+        url: "https://remote.example.com/users/alice"
+      }.deep_transform_keys! { |key| key.to_s.camelize(:lower) }
+    end
+
+    let(:remote_post_hash) do
+      {}
+    end
+
     before do
       # Mock the local host resolution
       allow(Federails::Utils::Host).to receive(:local_url?).and_return(true)
@@ -27,16 +45,17 @@ describe Federation::LikeActivityHandler do
         publishable_type: "posts",
         id: post.id
       })
+
+      stub_request(:get, "https://remote.example.com/users/alice").
+         to_return(status: 200, body: remote_actor_hash.to_json, headers: { 'Content-Type' => 'application/activity+json' })
+      stub_request(:get, "http://example.com/federails/server/published/posts/1").
+         to_return(status: 200, body: remote_post_hash.to_json, headers: { 'Content-Type' => 'application/activity+json' })
     end
 
     context "when activity and actor are successfully dereferenced" do
       before do
-        allow(Fediverse::Request).to receive(:dereference).with(activity_hash).and_return(activity_hash)
-        allow(Fediverse::Request).to receive(:dereference).with(remote_actor_url).and_return({
-          "id" => remote_actor_url,
-          "type" => "Person",
-          "name" => "Alice"
-        })
+        # allow(Fediverse::Request).to receive(:dereference).with(activity_hash).and_return(activity_hash)
+        # allow(Fediverse::Request).to receive(:dereference).with(remote_actor_url).and_return(remote_actor_hash)
       end
 
       it "creates a remote Federails::Actor if it doesn't exist" do
@@ -46,7 +65,7 @@ describe Federation::LikeActivityHandler do
       end
 
       it "reuses an existing Federails::Actor" do
-        actor = create(:federails_actor, :remote, federated_url: remote_actor_url)
+        create(:distant_actor, federated_url: remote_actor_url)
 
         expect {
           described_class.handle_like_activity(activity_hash)
@@ -80,6 +99,7 @@ describe Federation::LikeActivityHandler do
       end
 
       it "handles a Like activity with an ID string" do
+        allow(Fediverse::Request).to receive(:dereference).and_call_original
         allow(Fediverse::Request).to receive(:dereference).with("activity-id-123").and_return(activity_hash)
 
         expect {
@@ -183,15 +203,10 @@ describe Federation::LikeActivityHandler do
         })
       end
 
-      it "creates a new activity each time (as per the @todo comment)" do
-        described_class.handle_like_activity(activity_hash)
-        initial_count = Federails::Activity.count
-
-        described_class.handle_like_activity(activity_hash)
-        final_count = Federails::Activity.count
-
-        # This test documents the current behavior noted in @todo
-        expect(final_count).to be > initial_count
+      it "creates just one Like activity" do
+        expect {
+          2.times { described_class.handle_like_activity(activity_hash) }
+        }.to(change { Federails::Activity.count }.by(1))
       end
     end
   end
