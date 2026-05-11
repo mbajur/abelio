@@ -4,9 +4,9 @@ authenticated_session = lambda do |req|
 end
 
 Rails.application.routes.draw do
-    constraints authenticated_session do
-      mount SolidErrors::Engine, at: "/solid_errors"
-    end
+  constraints authenticated_session do
+    mount SolidErrors::Engine, at: "/solid_errors"
+  end
 
   mount Federails::Engine => "/"
 
