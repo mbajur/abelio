@@ -38,5 +38,9 @@ module Abelio
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # config.rails_api_logger.connects_to = { database: { writing: :api_logger } }
+    config.middleware.insert_before Rails::Rack::Logger, RailsApiLogger::Middleware, path_regexp: %r{^/federation},
+                                                                                     skip_response_body_regexp: //
   end
 end

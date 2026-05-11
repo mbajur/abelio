@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_10_182025) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_11_162046) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -147,6 +147,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_10_182025) do
     t.string "software_version"
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_federails_hosts_on_domain", unique: true
+  end
+
+  create_table "inbound_request_logs", force: :cascade do |t|
+    t.string "client_reference"
+    t.datetime "created_at", null: false
+    t.datetime "ended_at"
+    t.integer "loggable_id"
+    t.string "loggable_type"
+    t.string "method"
+    t.string "path"
+    t.text "request_body"
+    t.text "response_body"
+    t.integer "response_code"
+    t.datetime "started_at"
+    t.datetime "updated_at", null: false
+    t.index ["client_reference"], name: "index_inbound_request_logs_on_client_reference"
+    t.index ["loggable_type", "loggable_id"], name: "index_inbound_request_logs_on_loggable"
+  end
+
+  create_table "outbound_request_logs", force: :cascade do |t|
+    t.string "client_reference"
+    t.datetime "created_at", null: false
+    t.datetime "ended_at"
+    t.integer "loggable_id"
+    t.string "loggable_type"
+    t.string "method"
+    t.string "path"
+    t.text "request_body"
+    t.text "response_body"
+    t.integer "response_code"
+    t.datetime "started_at"
+    t.datetime "updated_at", null: false
+    t.index ["client_reference"], name: "index_outbound_request_logs_on_client_reference"
+    t.index ["loggable_type", "loggable_id"], name: "index_outbound_request_logs_on_loggable"
   end
 
   create_table "posts", force: :cascade do |t|
