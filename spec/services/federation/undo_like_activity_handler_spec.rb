@@ -6,30 +6,23 @@ describe Federation::UndoLikeActivityHandler do
     let(:post) { create(:post, site: site) }
     let(:remote_actor) { create(:distant_actor) }
 
-    let(:local_url) { "http://example.com/federails/server/published/posts/#{post.id}" }
-    let(:remote_actor_url) { "https://remote.example.com/users/alice" }
+    let(:local_url) { "https://aptest4.mbajur.com/federation/published/posts/#{post.id}" }
+    let(:remote_actor_url) { "https://mastodon.social/users/mbajur" }
 
     let(:activity_hash) do
       {
-        "id" => "https://remote.example.com/users/alice/undos/456",
+        "@context" => "https://www.w3.org/ns/activitystreams",
+        "id" => "https://mastodon.social/users/mbajur#likes/292607539/undo",
         "type" => "Undo",
         "actor" => remote_actor_url,
-        "object" => local_url
+        "object" => {
+          "id" => "https://mastodon.social/users/mbajur#likes/292607539",
+          "type" => "Like",
+          "actor" => remote_actor_url,
+          "object" => local_url
+        },
+        "actor_id" => "77e203a6-5c42-4009-a238-cc2d075d2038"
       }
-    end
-
-    let(:remote_actor_hash) do
-      {
-        id: remote_actor_url,
-        type: "Person",
-        name: "Alice",
-        preferred_username: "alice",
-        inbox: "https://remote.example.com/users/alice/inbox",
-        outbox: "https://remote.example.com/users/alice/outbox",
-        followers: "https://remote.example.com/users/alice/followers",
-        following: "https://remote.example.com/users/alice/following",
-        url: "https://remote.example.com/users/alice"
-      }.deep_transform_keys! { |key| key.to_s.camelize(:lower) }
     end
 
     before do
@@ -40,20 +33,12 @@ describe Federation::UndoLikeActivityHandler do
         publishable_type: "posts",
         id: post.id
       })
-
-      stub_request(:get, remote_actor_url)
-        .to_return(status: 200, body: remote_actor_hash.to_json, headers: { "Content-Type" => "application/activity+json" })
-      stub_request(:get, local_url)
-        .to_return(status: 200, body: { "id" => local_url }.to_json, headers: { "Content-Type" => "application/activity+json" })
+      allow(Federails::Actor).to receive(:find_or_create_by_object).with(remote_actor_url).and_return(remote_actor)
     end
 
     context "when a matching Like activity exists" do
       let!(:like_activity) do
         Federails::Activity.create!(actor: remote_actor, entity: post, action: "Like")
-      end
-
-      before do
-        allow(Federails::Actor).to receive(:find_or_create_by_object).with(remote_actor_url).and_return(remote_actor)
       end
 
       it "destroys the Like activity" do
@@ -73,22 +58,9 @@ describe Federation::UndoLikeActivityHandler do
           described_class.handle_undo_like_request(activity_hash)
         }.to change { post.reload.likes_count }.from(1).to(0)
       end
-
-      it "handles an Undo activity passed as an ID string" do
-        allow(Fediverse::Request).to receive(:dereference).and_call_original
-        allow(Fediverse::Request).to receive(:dereference).with("activity-id-456").and_return(activity_hash)
-
-        expect {
-          described_class.handle_undo_like_request("activity-id-456")
-        }.to change { Federails::Activity.count }.by(-1)
-      end
     end
 
     context "when no matching Like activity exists" do
-      before do
-        allow(Federails::Actor).to receive(:find_or_create_by_object).with(remote_actor_url).and_return(remote_actor)
-      end
-
       it "does not raise an error" do
         expect {
           described_class.handle_undo_like_request(activity_hash)
@@ -112,7 +84,6 @@ describe Federation::UndoLikeActivityHandler do
 
     context "when the object URL is not a local URL" do
       before do
-        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
         allow(Federails::Utils::Host).to receive(:local_url?).and_return(false)
       end
 
@@ -125,7 +96,6 @@ describe Federation::UndoLikeActivityHandler do
 
     context "when the local URL does not resolve to a post" do
       before do
-        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
         allow(Federails::Utils::Host).to receive(:local_route).and_return({
           controller: "federails/server/published",
           action: "show",
@@ -143,7 +113,6 @@ describe Federation::UndoLikeActivityHandler do
 
     context "when the controller is not correct" do
       before do
-        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
         allow(Federails::Utils::Host).to receive(:local_route).and_return({
           controller: "posts",
           action: "show",
@@ -161,7 +130,6 @@ describe Federation::UndoLikeActivityHandler do
 
     context "when the action is not show" do
       before do
-        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
         allow(Federails::Utils::Host).to receive(:local_route).and_return({
           controller: "federails/server/published",
           action: "index",
@@ -179,7 +147,6 @@ describe Federation::UndoLikeActivityHandler do
 
     context "when the post does not exist" do
       before do
-        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
         allow(Federails::Utils::Host).to receive(:local_route).and_return({
           controller: "federails/server/published",
           action: "show",

@@ -6,15 +6,17 @@ describe Federation::LikeActivityHandler do
     let(:post) { create(:post, site: site) }
     let(:remote_actor) { create(:distant_actor) }
 
-    let(:local_url) { "http://example.com/federails/server/published/posts/#{post.id}" }
-    let(:remote_actor_url) { "https://remote.example.com/users/alice" }
+    let(:local_url) { "https://aptest4.mbajur.com/federation/published/posts/#{post.id}" }
+    let(:remote_actor_url) { "https://mastodon.social/users/mbajur" }
 
     let(:activity_hash) do
       {
-        "id" => "https://remote.example.com/users/alice/likes/123",
+        "@context" => "https://www.w3.org/ns/activitystreams",
+        "id" => "https://mastodon.social/users/mbajur#likes/292607539",
         "type" => "Like",
         "actor" => remote_actor_url,
-        "object" => local_url
+        "object" => local_url,
+        "actor_id" => "77e203a6-5c42-4009-a238-cc2d075d2038"
       }
     end
 
@@ -46,10 +48,10 @@ describe Federation::LikeActivityHandler do
         id: post.id
       })
 
-      stub_request(:get, "https://remote.example.com/users/alice").
-         to_return(status: 200, body: remote_actor_hash.to_json, headers: { 'Content-Type' => 'application/activity+json' })
-      stub_request(:get, "http://example.com/federails/server/published/posts/1").
-         to_return(status: 200, body: remote_post_hash.to_json, headers: { 'Content-Type' => 'application/activity+json' })
+      stub_request(:get, remote_actor_url).
+        to_return(status: 200, body: remote_actor_hash.to_json, headers: { 'Content-Type' => 'application/activity+json' })
+      stub_request(:get, local_url).
+        to_return(status: 200, body: remote_post_hash.to_json, headers: { 'Content-Type' => 'application/activity+json' })
     end
 
     context "when activity and actor are successfully dereferenced" do
