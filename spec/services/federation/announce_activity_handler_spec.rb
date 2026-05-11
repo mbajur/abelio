@@ -85,6 +85,12 @@ describe Federation::AnnounceActivityHandler do
         expect(Federails::Activity.last.entity).to eq(post)
       end
 
+      it "updates the post announces count" do
+        expect {
+          described_class.handle_announce_activity(activity_hash)
+        }.to change { post.reload.announces_count }.from(0).to(1)
+      end
+
       it "does not create a duplicate Announce activity for the same actor and post" do
         expect {
           2.times { described_class.handle_announce_activity(activity_hash) }

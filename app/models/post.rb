@@ -46,6 +46,10 @@ class Post < ApplicationRecord
     update! likes_count: Federails::Activity.where(action: "Like", entity: self).count
   end
 
+  def update_announces_count!
+    update! announces_count: Federails::Activity.where(action: "Announce", entity: self).count
+  end
+
   private
 
   def create_federails_activity(action)

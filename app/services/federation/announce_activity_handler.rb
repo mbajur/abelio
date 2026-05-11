@@ -13,6 +13,6 @@ class Federation::AnnounceActivityHandler
     entity = Post.find(local_route[:id])
     Federails::Activity.find_or_create_by! actor: actor, action: "Announce", entity: entity
 
-    # entity.update_announces_count!
+    entity.update_announces_count!
   end
 end
