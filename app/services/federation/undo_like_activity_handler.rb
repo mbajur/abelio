@@ -1,5 +1,5 @@
-class Federation::LikeActivityHandler
-  def self.handle_like_activity(activity_hash_or_id)
+class Federation::UndoLikeActivityHandler
+  def self.handle_undo_like_request(activity_hash_or_id)
     activity = Fediverse::Request.dereference(activity_hash_or_id)
     actor = Federails::Actor.find_or_create_by_object activity["actor"]
     object = Fediverse::Request.dereference(activity["object"])
@@ -11,7 +11,8 @@ class Federation::LikeActivityHandler
     raise ActiveRecord::RecordNotFound unless local_route[:controller] == "federails/server/published" && local_route[:action] == "show" && local_route[:publishable_type] == "posts"
 
     entity = Post.find(local_route[:id])
-    Federails::Activity.find_or_create_by! actor: actor, action: "Like", entity: entity
+    like = Federails::Activity.find_by actor: actor, entity: entity, action: "Like"
+    like&.destroy
 
     entity.update_likes_count!
   end
