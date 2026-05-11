@@ -1,6 +1,6 @@
 class Federation::UndoLikeActivityHandler
   def self.handle_undo_like_request(activity)
-    original_activity = Request.dereference(activity["object"])
+    original_activity = Federails::Request.dereference(activity["object"])
     actor  = Federails::Actor.find_or_create_by_object original_activity["actor"]
 
     object_id = original_activity["object"]
