@@ -88,3 +88,5 @@ gem "pundit", "~> 2.5"
 gem "pagy", "~> 43.5"
 
 gem "liquid", "~> 5.12"
+
+gem "solid_errors", "~> 0.7.0"
