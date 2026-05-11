@@ -1,5 +1,5 @@
 GIT
-  remote: git@gitlab.com:experimentslabs/federails.git
+  remote: https://gitlab.com/experimentslabs/federails.git
   revision: d1a6a237b70987561c59f3c306c2d6b056dcb47e
   specs:
     federails (0.8.0)
