@@ -85,7 +85,7 @@ GEM
       activerecord (>= 4.0.0, < 8.2)
     base64 (0.3.0)
     bcp47_spec (0.2.1)
-    bcrypt (3.1.21)
+    bcrypt (3.1.22)
     bcrypt_pbkdf (1.1.2)
     bigdecimal (4.1.2)
     bindex (0.8.1)
@@ -479,7 +479,7 @@ PLATFORMS
 DEPENDENCIES
   active_link_to (~> 1.0)
   awesome_nested_set (~> 3.9)
-  bcrypt (~> 3.1.7)
+  bcrypt (~> 3.1.22)
   bootsnap
   brakeman
   bullet
