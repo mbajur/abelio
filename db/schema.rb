@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_11_162046) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_11_170306) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -184,6 +184,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_162046) do
   end
 
   create_table "posts", force: :cascade do |t|
+    t.integer "announces_count", default: 0
     t.text "content"
     t.datetime "created_at", null: false
     t.integer "federails_actor_id"
