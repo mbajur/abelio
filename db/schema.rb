@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_10_165829) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_10_182025) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -154,6 +154,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_10_165829) do
     t.datetime "created_at", null: false
     t.integer "federails_actor_id"
     t.string "federated_url"
+    t.integer "likes_count", default: 0
     t.datetime "published_at"
     t.integer "site_id", null: false
     t.integer "sketch_of_id"
