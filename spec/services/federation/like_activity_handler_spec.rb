@@ -1,0 +1,198 @@
+require "rails_helper"
+
+describe Federation::LikeActivityHandler do
+  describe ".handle_like_activity" do
+    let(:site) { create(:site) }
+    let(:post) { create(:post, site: site) }
+    let(:remote_actor) { create(:federails_actor, :remote) }
+
+    let(:local_url) { "http://example.com/federails/server/published/posts/#{post.id}" }
+    let(:remote_actor_url) { "https://remote.example.com/users/alice" }
+
+    let(:activity_hash) do
+      {
+        "id" => "https://remote.example.com/users/alice/likes/123",
+        "type" => "Like",
+        "actor" => remote_actor_url,
+        "object" => local_url
+      }
+    end
+
+    before do
+      # Mock the local host resolution
+      allow(Federails::Utils::Host).to receive(:local_url?).and_return(true)
+      allow(Federails::Utils::Host).to receive(:local_route).and_return({
+        controller: "federails/server/published",
+        action: "show",
+        publishable_type: "posts",
+        id: post.id
+      })
+    end
+
+    context "when activity and actor are successfully dereferenced" do
+      before do
+        allow(Fediverse::Request).to receive(:dereference).with(activity_hash).and_return(activity_hash)
+        allow(Fediverse::Request).to receive(:dereference).with(remote_actor_url).and_return({
+          "id" => remote_actor_url,
+          "type" => "Person",
+          "name" => "Alice"
+        })
+      end
+
+      it "creates a remote Federails::Actor if it doesn't exist" do
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.to change { Federails::Actor.where(federated_url: remote_actor_url).count }.from(0).to(1)
+      end
+
+      it "reuses an existing Federails::Actor" do
+        actor = create(:federails_actor, :remote, federated_url: remote_actor_url)
+
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.not_to change { Federails::Actor.count }
+      end
+
+      it "creates a Federails::Activity record" do
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.to change { Federails::Activity.count }.by(1)
+      end
+
+      it "sets the activity action to 'Like'" do
+        described_class.handle_like_activity(activity_hash)
+        activity = Federails::Activity.last
+
+        expect(activity.action).to eq("Like")
+      end
+
+      it "associates the activity with the correct post" do
+        described_class.handle_like_activity(activity_hash)
+        activity = Federails::Activity.last
+
+        expect(activity.entity).to eq(post)
+      end
+
+      it "updates the post likes count" do
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.to change { post.reload.likes_count }.from(0).to(1)
+      end
+
+      it "handles a Like activity with an ID string" do
+        allow(Fediverse::Request).to receive(:dereference).with("activity-id-123").and_return(activity_hash)
+
+        expect {
+          described_class.handle_like_activity("activity-id-123")
+        }.to change { Federails::Activity.count }.by(1)
+      end
+    end
+
+    context "when the object URL is not a local URL" do
+      before do
+        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
+        allow(Federails::Utils::Host).to receive(:local_url?).and_return(false)
+      end
+
+      it "raises 'Not a local ID' error" do
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.to raise_error("Not a local ID")
+      end
+    end
+
+    context "when the local URL does not resolve to a post" do
+      before do
+        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
+        allow(Federails::Utils::Host).to receive(:local_route).and_return({
+          controller: "federails/server/published",
+          action: "show",
+          publishable_type: "articles",  # Different type
+          id: 123
+        })
+      end
+
+      it "raises ActiveRecord::RecordNotFound" do
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when the controller is not correct" do
+      before do
+        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
+        allow(Federails::Utils::Host).to receive(:local_route).and_return({
+          controller: "posts",  # Wrong controller
+          action: "show",
+          publishable_type: "posts",
+          id: post.id
+        })
+      end
+
+      it "raises ActiveRecord::RecordNotFound" do
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when the action is not show" do
+      before do
+        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
+        allow(Federails::Utils::Host).to receive(:local_route).and_return({
+          controller: "federails/server/published",
+          action: "index",  # Wrong action
+          publishable_type: "posts",
+          id: post.id
+        })
+      end
+
+      it "raises ActiveRecord::RecordNotFound" do
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when the post does not exist" do
+      before do
+        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
+        allow(Federails::Utils::Host).to receive(:local_route).and_return({
+          controller: "federails/server/published",
+          action: "show",
+          publishable_type: "posts",
+          id: 99999
+        })
+      end
+
+      it "raises ActiveRecord::RecordNotFound" do
+        expect {
+          described_class.handle_like_activity(activity_hash)
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when multiple likes from the same actor are received" do
+      before do
+        allow(Fediverse::Request).to receive(:dereference).and_return(activity_hash)
+        allow(Fediverse::Request).to receive(:dereference).with(remote_actor_url).and_return({
+          "id" => remote_actor_url,
+          "type" => "Person",
+          "name" => "Alice"
+        })
+      end
+
+      it "creates a new activity each time (as per the @todo comment)" do
+        described_class.handle_like_activity(activity_hash)
+        initial_count = Federails::Activity.count
+
+        described_class.handle_like_activity(activity_hash)
+        final_count = Federails::Activity.count
+
+        # This test documents the current behavior noted in @todo
+        expect(final_count).to be > initial_count
+      end
+    end
+  end
+end
