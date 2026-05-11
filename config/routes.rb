@@ -1,4 +1,13 @@
+authenticated_session = lambda do |req|
+  session_id = ActionDispatch::Cookies::CookieJar.build(req, req.cookies).signed[:session_id]
+  session_id.present? && Session.exists?(id: session_id)
+end
+
 Rails.application.routes.draw do
+    # constraints authenticated_session do
+    mount SolidErrors::Engine, at: "/solid_errors"
+  # end
+
   mount Federails::Engine => "/"
 
   resource :session
