@@ -18,14 +18,18 @@ class Search
   private
 
   def search_by_username
-    Federails::Actor.find_or_create_by_account(query)
+    [ :actor, Federails::Actor.find_or_create_by_account(query) ]
   end
 
   def search_by_url
-    Fediverse::Request.dereference(query)
+    object = Fediverse::Request.dereference(query)
+    postable = Federails::Utils::Object.find_or_initialize!(object)
+    postable.post ||= Post.new
+    postable.save!
+    [ :post, post ]
   end
 
   def search_by_content
-    Post.local.where("content ILIKE ?", "%#{query}%")
+    [ :posts, [ Post.local.where("content ILIKE ?", "%#{query}%") ] ]
   end
 end

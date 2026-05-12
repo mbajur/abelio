@@ -1,1 +1,18 @@
-<%= debug @result.as_json %>
+<%= render(PageComponent.new(title: "Search results for #{params[:q]}", main_classes: "col-span-5")) do %>
+  <% if @mode == :actor %>
+      <div class="flex items-center gap-3 mt-3">
+        <img src="<%= @result.extensions.dig("icon", "url") %>" width="50" height="50" class="rounded-full">
+
+        <div>
+          <p class="font-bold"><%= @result.name %></p>
+          <p class="text-sm text-gray-500">@<%= @result.username %>@<%= @result.server %></p>
+        </div>
+
+        <div class="ml-auto flex items-center gap-4">
+          <a href="#" class="text-blue-500">Follow</a>
+        </div>
+      </div>
+  <% elsif @mode == :post %>
+    <%= debug @result %>
+  <% end %>
+<% end %>
