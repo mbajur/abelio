@@ -39,6 +39,8 @@ Rails.application.routes.draw do
       resources :images, only: %i[create destroy]
     end
 
+    get :search, to: "search#index"
+
     root to: "dashboard#index"
   end
 

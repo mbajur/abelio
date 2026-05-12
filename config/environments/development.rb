@@ -79,4 +79,7 @@ Rails.application.configure do
   config.after_initialize do
     Bullet.console = true
   end
+
+  # Configure Solid Errors
+  config.solid_errors.connects_to = { database: { writing: :errors } }
 end
