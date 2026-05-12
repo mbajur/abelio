@@ -12,6 +12,8 @@ class Post < ApplicationRecord
   belongs_to :site
   belongs_to :user
 
+  validates :postable, presence: true
+
   delegate :blocks, to: :postable
 
   enum :state, {
