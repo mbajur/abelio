@@ -4,7 +4,7 @@ module Public
       {
         "name" => resource.name,
         "summary" => resource.summary,
-        "avatar" => { "url" => resource.logo_url },
+        "avatar" => { "url" => resource.logo_url(host: nil) },
         "federated_url" => resource.federails_actor.federated_url
       }
     end

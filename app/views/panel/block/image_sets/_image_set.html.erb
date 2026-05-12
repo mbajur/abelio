@@ -6,7 +6,7 @@
           <%= tabler_icon :x, size: 12 %>
         <% end %>
 
-        <img src="<%= child.blockable.file_url %>" class="h-full object-cover">
+        <img src="<%= child.blockable.file_url(host: nil) %>" class="h-full object-cover">
       </div>
     <% end %>
   </div>

@@ -36,7 +36,7 @@
 
   <div class="mt-4" id="<%= dom_id(@post, :blocks_editor) %>">
     <div id="<%= dom_id(@post, :blocks) %>">
-      <% @post.blocks.where(depth: 0).each do |block| %>
+      <% @post.postable.blocks.where(depth: 0).each do |block| %>
         <%= render block %>
       <% end %>
     </div>

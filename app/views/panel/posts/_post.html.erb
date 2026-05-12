@@ -2,7 +2,7 @@
   <header>
     <div href="" class="flex items-center py-4 px-2 pt-0">
       <div class="flex items-center">
-        <%= image_tag post.federails_actor.entity.logo_url || 'https://mockmind-api.uifaces.co/content/human/80.jpg', class: "w-10 h-10 rounded-full mr-3" %>
+        <%= image_tag post.federails_actor.entity.logo_url(host: nil) || 'https://mockmind-api.uifaces.co/content/human/80.jpg', class: "w-10 h-10 rounded-full mr-3" %>
 
         <span class="font-bold">
           <%= post.federails_actor.name || post.federails_actor.username %>
@@ -34,25 +34,7 @@
     </div>
   </header>
 
-  <% post.blocks.where(depth: 0).each do |block| %>
-    <div class="mb-6">
-      <% if block.blockable_type == 'Block::ImageSet' %>
-        <div class="grid grid-column gap-1">
-          <% block.children.each do |image| %>
-            <% blockable = image.blockable %>
-
-            <%= link_to blockable.file_url do %>
-              <%= image_tag blockable.file_url, width: blockable.file.metadata['width'], height: blockable.file.metadata['height'] %>
-            <% end %>
-          <% end %>
-        </div>
-      <% elsif block.blockable_type == 'Block::RichText' %>
-        <div class="px-2">
-          <%= block.blockable.content %>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
+  <%= render post.postable, post: post %>
 
   <div class="p-4 pt-0 px-2">
     <% tags = ["Pontiac", "Pontiac Banshee", "1966", "60 year ago", "dead brands", "concept", "prototype", "Sixty years going nowhere", "John Z. DeLorean", "design study"] %>
