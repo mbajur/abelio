@@ -56,10 +56,12 @@ module Panel
       Post.transaction do
         if @original_post
           @original_post.postable.blocks.destroy_all
-          @post.postable.blocks.update_all(
+          sketch_postable = @post.postable
+          sketch_postable.blocks.update_all(
             resource_id: @original_post.postable.id,
             resource_type: @original_post.postable.class.name
           )
+          sketch_postable.destroy!
           @post.destroy!
         end
 
