@@ -3,7 +3,7 @@ module Public
     class ImageSetSerializer < BaseSerializer
       def data
         {
-          "images" => resource.block.children.map { |block| Public::Block::ImageSerializer.new(block.blockable).data }
+          "images" => resource.block.children.order(:lft).map { |block| Public::Block::ImageSerializer.new(block.blockable).data }
         }
       end
     end
