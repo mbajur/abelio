@@ -4,6 +4,6 @@ class Article < ApplicationRecord
   has_one :post, as: :postable, dependent: :destroy
 
   def to_partial_path
-    "panel/notes/note"
+    "panel/articles/article"
   end
 end
