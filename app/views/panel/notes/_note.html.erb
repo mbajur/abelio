@@ -1,8 +1,8 @@
-<% post.postable.blocks.where(depth: 0).each do |block| %>
+<% post.postable.blocks.where(depth: 0).order(:lft).each do |block| %>
   <div class="mb-6">
     <% if block.blockable_type == 'Block::ImageSet' %>
       <div class="grid grid-column gap-1">
-        <% block.children.each do |image| %>
+        <% block.children.order(:lft).each do |image| %>
           <% blockable = image.blockable %>
 
           <%= link_to blockable.file_url(host: nil) do %>
