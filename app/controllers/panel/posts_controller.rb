@@ -9,7 +9,7 @@ module Panel
         post = current_site.posts.initialized.last
       else
         post = current_site.posts.new
-        post.postable = Article.build
+        post.postable = Article.new
         post.user = current_user
         post.postable.blocks.build(blockable: ::Block::ImageSet.new)
         post.postable.blocks.build(blockable: ::Block::RichText.new)
