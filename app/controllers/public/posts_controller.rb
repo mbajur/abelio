@@ -8,7 +8,7 @@ module Public
       headers["Content-Type"] = "text/html"
 
       template = Liquid::Template.parse(current_site.template.markup)
-      pagination, objects = pagy(current_site.posts.order(created_at: :desc))
+      pagination, objects = pagy(current_site.posts.published.freshly_published_first)
 
       render plain: template.render!(
         "page_type" => "home",
@@ -22,7 +22,7 @@ module Public
       headers["Content-Type"] = "text/html"
 
       template = Liquid::Template.parse(current_site.template.markup)
-      post = current_site.posts.find(params[:id])
+      post = current_site.posts.published.find(params[:id])
 
       render plain: template.render!(
         "page_type" => "post",

@@ -2,16 +2,19 @@ require "federails/data_transformer/note"
 
 class Post < ApplicationRecord
   include Sketchable
-
   include Federails::DataEntity
+
   acts_as_federails_data handles: "Note",
                          actor_entity_method: :site
 
+  delegated_type :postable, types: %w[Note Article]
+
   belongs_to :site
   belongs_to :user
-  has_many :blocks, as: :resource, dependent: :destroy
 
-  accepts_nested_attributes_for :blocks
+  validates :postable, presence: true
+
+  delegate :blocks, to: :postable
 
   enum :state, {
     initialized: "initialized",

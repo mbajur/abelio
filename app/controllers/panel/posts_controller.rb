@@ -9,9 +9,10 @@ module Panel
         post = current_site.posts.initialized.last
       else
         post = current_site.posts.new
+        post.postable = Article.new
         post.user = current_user
-        post.blocks.build(blockable: ::Block::ImageSet.new)
-        post.blocks.build(blockable: ::Block::RichText.new)
+        post.postable.blocks.build(blockable: ::Block::ImageSet.new)
+        post.postable.blocks.build(blockable: ::Block::RichText.new)
         post.save!
       end
 
@@ -42,8 +43,9 @@ module Panel
           sketch_of: @original_post,
           state: :sketch
         )
+        @post.postable = @original_post.postable.dup
         @post.save!
-        @post.duplicate_blocks(@original_post.blocks.roots.order(:lft))
+        @post.postable.duplicate_blocks(@original_post.postable.blocks.roots.order(:lft))
       end
     end
 
@@ -53,11 +55,13 @@ module Panel
 
       Post.transaction do
         if @original_post
-          @original_post.blocks.destroy_all
-          @post.blocks.update_all(
-            resource_id: @original_post.id,
-            resource_type: @original_post.class.name
+          @original_post.postable.blocks.destroy_all
+          sketch_postable = @post.postable
+          sketch_postable.blocks.update_all(
+            resource_id: @original_post.postable.id,
+            resource_type: @original_post.postable.class.name
           )
+          sketch_postable.destroy!
           @post.destroy!
         end
 

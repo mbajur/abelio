@@ -10,7 +10,7 @@
   </script>
 
   {% if post %}
-    <link href='{{ post.federated_url }}' rel='alternate' type='application/activity+json'>
+  <link href='{{ post.federated_url }}' rel='alternate' type='application/activity+json'>
   {% endif %}
 
   <link href="{{ site.federated_url }}" rel="alternate" type="application/activity+json">
@@ -89,17 +89,15 @@
       [&_p+h4]:mt-6
     ">
     {% for block in post.content_blocks %}
-    {% if block.type == 'header' %}
-    <h{{ block.data.level }}>{{ block.data.text }}</h{{ block.data.level }}>
+    {% if block.type == 'rich_text' %}
+    {{ block.content }}
     {% endif %}
 
-    {% if block.type == 'paragraph' %}
-    <p>{{ block.data.text }}</p>
-    {% endif %}
-
-    {% if block.type == 'image' %}
-    <p><img src="{{ block.data.file.url }}" width="{{ block.data.file.width }}" height="{{ block.data.file.height }}" />
-    </p>
+    {% if block.type == 'image_set' %}
+    {% for image in block.images %}
+    <p><img src="{{ image.file.url }}" width="{{ image.file.metadata.width }}"
+        height="{{ image.file.metadata.height }}" /></p>
+    {% endfor %}
     {% endif %}
     {% endfor %}
 
@@ -140,8 +138,9 @@
   </div>
   {% endif %}
 
-  <footer class="max-w-xl mx-auto text-center text-sm text-gray-500 mt-12 mb-6">
+  <footer class="max-w-xl mx-auto text-center text-sm text-gray-500 mt-12 mb-6 italic">
     <p>Made with <a href="https://mastodon.social/@abelio">Abelio</a></p>
   </footer>
 </body>
+
 </html>

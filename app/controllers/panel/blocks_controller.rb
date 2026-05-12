@@ -2,7 +2,7 @@ module Panel
   class BlocksController < PanelController
     def create
       @post = Post.find(params[:post_id])
-      @block = @post.blocks.new
+      @block = @post.postable.blocks.new
 
       case params[:blockable_type]
       when "Block::RichText"
@@ -37,7 +37,7 @@ module Panel
 
     def destroy
       @post = Post.find(params[:post_id])
-      @block = @post.blocks.find(params[:id])
+      @block = @post.postable.blocks.find(params[:id])
       @block.destroy
     end
 
