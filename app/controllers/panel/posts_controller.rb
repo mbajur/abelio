@@ -5,8 +5,8 @@ module Panel
     end
 
     def new
-      if current_site.posts.initialized.any?
-        post = current_site.posts.initialized.last
+      if current_site.posts.local_federails_entities.initialized.any?
+        post = current_site.posts.local_federails_entities.initialized.last
       else
         post = current_site.posts.new
         post.postable = Article.new
@@ -31,7 +31,7 @@ module Panel
     end
 
     def edit
-      @original_post = current_site.posts.find(params[:id])
+      @original_post = current_site.posts.local_federails_entities.find(params[:id])
 
       if @original_post.live_editable?
         @post = @original_post
@@ -50,7 +50,7 @@ module Panel
     end
 
     def update
-      @post = current_site.posts.find(params[:id])
+      @post = current_site.posts.local_federails_entities.find(params[:id])
       @original_post = @post.sketch_of
 
       Post.transaction do
