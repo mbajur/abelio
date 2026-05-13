@@ -1,8 +1,10 @@
+<% actor_presenter = ActorPresenter.new(post.federails_actor) %>
+
 <article class="bg-white rounded-lg mb-6 border-b">
   <header>
     <div href="" class="flex items-center py-4 px-2 pt-0">
       <div class="flex items-center">
-        <%= image_tag post.federails_actor.entity.logo_url(host: nil) || 'https://mockmind-api.uifaces.co/content/human/80.jpg', class: "w-10 h-10 rounded-full mr-3" %>
+        <%= image_tag actor_presenter.avatar_url || 'https://mockmind-api.uifaces.co/content/human/80.jpg', class: "w-10 h-10 rounded-full mr-3" %>
 
         <span class="font-bold">
           <%= post.federails_actor.name || post.federails_actor.username %>
@@ -25,6 +27,7 @@
             data-dropdown-target="menu"
             class="hidden bg-white border rounded shadow-md p-2 min-w-48"
           >
+            <time class="block px-4 py-2 text-gray-500 hover:bg-gray-100" datetime="<%= post.published_at %>" title="<%= post.published_at %>"><%= post.published_at&.to_fs(:short) %></time>
             <a href="<%= edit_panel_post_path(post) %>" class="block px-4 py-2 hover:bg-gray-100">Edit</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Stop following <%= post.federails_actor.name || post.federails_actor.username %></a>
             <a href="#" class="text-red-500 block px-4 py-2 hover:bg-gray-100">Delete</a>
@@ -36,12 +39,26 @@
 
   <%= render post.postable, post: post %>
 
-  <div class="p-4 pt-0 px-2">
-    <% tags = ["Pontiac", "Pontiac Banshee", "1966", "60 year ago", "dead brands", "concept", "prototype", "Sixty years going nowhere", "John Z. DeLorean", "design study"] %>
-    <% tags.each do |tag| %>
-      <%= link_to "##{tag}", "#", class: "mr-2 text-gray-500 hover:underline" %>
-    <% end %>
-  </div>
+  <%# This is disabled untill we make it in a smarter way. Otherwise, when someone on mastodon puts a list of hashtags
+    # at the end of the Note, both the ones in content and these are being displayed.
+    # Or simply display it only for local posts for now. @todo %>
+  <% if false %>
+    <div class="p-4 pt-0 px-2">
+      <%
+        tag_struct = Struct.new(:name, :url)
+
+        if post.local?
+          tags = []
+        else
+          tags = post.raw_data["tag"]&.select { |tag| tag["type"] == "Hashtag" }&.map { |tag| tag_struct.new(tag["name"], tag["href"]) } || []
+        end
+      %>
+
+      <% tags.each do |tag| %>
+        <%= link_to tag.name, tag.url, class: "mr-2 text-gray-500 hover:underline" %>
+      <% end %>
+    </div>
+  <% end %>
 
   <footer class="flex items-center place-content-between p-4 px-2 pt-0 text-gray-600">
     <a href="#"><%= tabler_icon :message_circle, size: 28 %></a>

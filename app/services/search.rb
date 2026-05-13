@@ -23,13 +23,12 @@ class Search
 
   def search_by_url
     object = Fediverse::Request.dereference(query)
-    postable = Federails::Utils::Object.find_or_initialize!(object)
-    postable.post ||= Post.new
-    postable.save!
+    post = Federails::Utils::Object.find_or_initialize!(object)
+    post.save!
     [ :post, post ]
   end
 
   def search_by_content
-    [ :posts, [ Post.local.where("content ILIKE ?", "%#{query}%") ] ]
+    [ :posts, [ Post.where("content ILIKE ?", "%#{query}%") ] ]
   end
 end

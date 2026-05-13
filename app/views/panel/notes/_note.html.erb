@@ -1,19 +1,50 @@
-<% post.postable.blocks.where(depth: 0).order(:lft).each do |block| %>
-  <div class="mb-6">
-    <% if block.blockable_type == 'Block::ImageSet' %>
-      <div class="grid grid-column gap-1">
-        <% block.children.order(:lft).each do |image| %>
-          <% blockable = image.blockable %>
+<% presenter = NotePresenter.new(post.postable) %>
 
-          <%= link_to blockable.file_url(host: nil) do %>
-            <%= image_tag blockable.file_url(host: nil), width: blockable.file.metadata['width'], height: blockable.file.metadata['height'] %>
+<% if post.local? %>
+  <% post.postable.blocks.where(depth: 0).order(:lft).each do |block| %>
+    <div class="mb-6">
+      <% if block.blockable_type == 'Block::ImageSet' %>
+        <div class="grid grid-column gap-1">
+          <% block.children.order(:lft).each do |image| %>
+            <% blockable = image.blockable %>
+
+            <%= link_to blockable.file_url(host: nil) do %>
+              <%= image_tag blockable.file_url(host: nil), width: blockable.file.metadata['width'], height: blockable.file.metadata['height'] %>
+            <% end %>
+          <% end %>
+        </div>
+      <% elsif block.blockable_type == 'Block::RichText' %>
+        <div class="px-2">
+          <%= block.blockable.content %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <div class="mb-6 text-lg">
+    <div class="grid grid-column gap-1">
+      <% if presenter.media.size > 2 %>
+        <div class="overflow-x-auto mb-6">
+          <div class="flex flex-nowrap gap-1">
+            <% presenter.media.each do |media| %>
+              <div class="flex-shrink-0 max-w-2xl">
+                <%= link_to media.url do %>
+                  <%= image_tag media.preview_url, width: media.width, height: media.height %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <% presenter.media.each do |media| %>
+          <%= link_to media.url do %>
+            <%= image_tag media.preview_url, width: media.width, height: media.height %>
           <% end %>
         <% end %>
-      </div>
-    <% elsif block.blockable_type == 'Block::RichText' %>
-      <div class="px-2">
-        <%= block.blockable.content %>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
+
+    <% sanitizer = Rails::HTML5::SafeListSanitizer.new %>
+    <%== sanitizer.sanitize(presenter.content, tags: ['a', 'br', 'p'], attributes: ['href', 'src']) %>
   </div>
 <% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_12_110925) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_13_135022) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -53,7 +53,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_110925) do
     t.text "content"
     t.datetime "created_at", null: false
     t.string "name"
-    t.json "raw_data"
     t.text "summary"
     t.datetime "updated_at", null: false
   end
@@ -178,7 +177,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_110925) do
   create_table "notes", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
-    t.json "raw_data"
     t.text "summary"
     t.datetime "updated_at", null: false
   end
@@ -210,11 +208,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_110925) do
     t.integer "postable_id"
     t.string "postable_type"
     t.datetime "published_at"
+    t.json "raw_data", default: "{}"
     t.integer "site_id", null: false
     t.integer "sketch_of_id"
     t.string "state", default: "initialized", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.index ["federails_actor_id"], name: "index_posts_on_federails_actor_id"
     t.index ["postable_type", "postable_id"], name: "index_posts_on_postable"
     t.index ["site_id"], name: "index_posts_on_site_id"

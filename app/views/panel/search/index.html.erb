@@ -1,7 +1,11 @@
-<%= render(PageComponent.new(title: "Search results for #{params[:q]}", main_classes: "col-span-5")) do %>
+<% @max_width = '7xl' %>
+<% @col_start = 2 %>
+<% actor_presenter = ActorPresenter.new(@result) %>
+
+<%= render(PageComponent.new(title: "Search results for #{params[:q]}")) do %>
   <% if @mode == :actor %>
       <div class="flex items-center gap-3 mt-3">
-        <img src="<%= @result.extensions.dig("icon", "url") %>" width="50" height="50" class="rounded-full">
+        <img src="<%= actor_presenter.icon_url %>" width="50" height="50" class="rounded-full">
 
         <div>
           <p class="font-bold"><%= @result.name %></p>
@@ -13,6 +17,8 @@
         </div>
       </div>
   <% elsif @mode == :post %>
-    <%= debug @result %>
+    <div class="mt-3">
+      <%= render "panel/posts/post", post: @result %>
+    </div>
   <% end %>
 <% end %>

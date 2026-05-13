@@ -3,6 +3,5 @@ FactoryBot.define do
     name { "MyString" }
     summary { "MyText" }
     content { "MyText" }
-    raw_data { "" }
   end
 end
