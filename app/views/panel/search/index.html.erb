@@ -5,7 +5,7 @@
 <%= render(PageComponent.new(title: "Search results for #{params[:q]}")) do %>
   <% if @mode == :actor %>
       <div class="flex items-center gap-3 mt-3">
-        <img src="<%= actor_presenter.icon_url %>" width="50" height="50" class="rounded-full">
+        <img src="<%= actor_presenter.avatar_url %>" width="50" height="50" class="rounded-full">
 
         <div>
           <p class="font-bold"><%= @result.name %></p>
