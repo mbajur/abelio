@@ -14,8 +14,8 @@
 
       <div class="flex gap-6">
         <span>Posts: <strong><%= @pagy.count %></strong></span>
-        <span>Followers: <strong>178</strong></span>
-        <span>Following: <strong>148</strong></span>
+        <span>Followers: <strong><%= @actor.followers.count %></strong></span>
+        <span>Following: <strong><%= @actor.following.count %></strong></span>
       </div>
 
       <div>
