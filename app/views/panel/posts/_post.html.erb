@@ -27,7 +27,7 @@
             data-dropdown-target="menu"
             class="hidden bg-white border rounded shadow-md p-2 min-w-48"
           >
-            <time class="block px-4 py-2 text-gray-500 hover:bg-gray-100" datetime="<%= post.published_at %>" title="<%= post.published_at %>"><%= post.published_at&.to_fs(:short) %></time>
+            <time class="block px-4 py-2 text-gray-500 hover:bg-gray-100" datetime="<%= post.published_at.iso8601 %>" title="<%= post.published_at %>"><%= post.published_at&.to_fs(:short) %></time>
             <a href="<%= edit_panel_post_path(post) %>" class="block px-4 py-2 hover:bg-gray-100">Edit</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Stop following <%= post.federails_actor.name || post.federails_actor.username %></a>
             <a href="#" class="text-red-500 block px-4 py-2 hover:bg-gray-100">Delete</a>

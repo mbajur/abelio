@@ -16,9 +16,8 @@ module Abelio
 
       assign_postable_from_activitypub_object(entity, object)
       entity.raw_data = object
-      published_at = object["published"].present? ? Time.zone.parse(object["published"]) : nil
-      entity.published_at = [ Time.current, published_at ].compact.min # Do not let this be in the future
-      entity.site = Site.first # @todo use Current.site when it will be implemented
+      entity.published_at = published_at_from_object(object)
+      entity.site = Current.site
       entity
     end
 
@@ -36,6 +35,23 @@ module Abelio
       attributes[:name] = object["name"] if postable_class == Article
 
       entity.postable = postable_class.new(attributes.compact)
+    end
+
+    def published_at_from_object(object)
+      published_at = if object["published"].present?
+        parse_datetime(object["published"])
+      else
+        nil
+      end
+
+      [ Time.current, published_at ].compact.min # Do not let this be in the future
+    end
+
+    def parse_datetime(value)
+      Time.zone.parse(value) || Time.current
+    rescue ArgumentError, TypeError
+      Rails.logger.warn "Failed to parse datetime value: #{value.inspect}"
+      Time.current
     end
   end
 end

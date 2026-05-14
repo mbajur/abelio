@@ -28,7 +28,8 @@ class Search
     [ :post, post ]
   end
 
+  # @todo move that to fulltext search, db engine agnostic
   def search_by_content
-    [ :posts, [ Post.where("content ILIKE ?", "%#{query}%") ] ]
+    [ :posts, Post.where("content LIKE ?", "%#{query}%") ]
   end
 end
