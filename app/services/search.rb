@@ -30,6 +30,9 @@ class Search
 
   # @todo move that to fulltext search, db engine agnostic
   def search_by_content
-    [ :posts, Post.where("content LIKE ?", "%#{query}%") ]
+    escaped_query = ActiveRecord::Base.sanitize_sql_like(query.to_s)
+    pattern = "%#{escaped_query.downcase}%"
+
+    [ :posts, Post.where("LOWER(content) LIKE ?", pattern).limit(10) ]
   end
 end
