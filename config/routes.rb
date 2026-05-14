@@ -41,6 +41,9 @@ Rails.application.routes.draw do
 
     get :search, to: "search#index"
 
+    # Other users resources
+    resources :actors, only: %i[show], path: :u, param: :id, constraints: { id: /[^\/]+/ }, format: false
+
     root to: "dashboard#index"
   end
 

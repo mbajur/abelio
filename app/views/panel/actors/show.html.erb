@@ -1,0 +1,33 @@
+<% @max_width = '7xl' %>
+<% @col_start = 2 %>
+<% actor_presenter = ActorPresenter.new(@actor) %>
+
+<%= render(PageComponent.new) do %>
+  <div class="flex gap-4 mt-3 mb-12 mx-auto max-w-2xl">
+    <img src="<%= actor_presenter.avatar_url %>" class="w-38 h-38 rounded-full mr-4" width="150" height="150">
+
+    <div class="flex flex-col gap-3 mt-3">
+      <div>
+        <h2 class="font-bold text-lg"><%= actor_presenter.name_or_username %></h2>
+        <span class="text-gray-500"><%= actor_presenter.username_with_server %></span>
+      </div>
+
+      <div class="flex gap-6">
+        <span>Posts: <strong>12</strong></span>
+        <span>Followers: <strong>178</strong></span>
+        <span>Following: <strong>148</strong></span>
+      </div>
+
+      <div>
+        <%= sanitize actor_presenter.summary %>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex gap-4 max-w-2xl mx-auto mb-12">
+    <a href="#" class="flex-1 px-4 py-2 bg-black text-white text-center hover:bg-gray-800">Follow</a>
+    <a href="#" class="flex-1 px-4 py-2 border text-center hover:bg-gray-100">Send a message</a>
+  </div>
+
+  <%= render collection: @posts, partial: 'panel/posts/post', as: :post %>
+<% end %>
