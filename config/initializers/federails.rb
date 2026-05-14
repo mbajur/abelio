@@ -9,6 +9,12 @@ Rails.application.config.to_prepare do
 end
 
 Rails.application.config.after_initialize do
+  # @todo i had to move that here from models because for some reason it suddenly
+  #   stopped registering the handlers when it was in the models, even though it worked before. Need to investigate that.
+  # Note.acts_as_federails_data handles: "Note", actor_entity_method: :site
+  # Article.acts_as_federails_data handles: "Article", actor_entity_method: :site
+  Post.acts_as_federails_data handles: %w[Note Article], actor_entity_method: :site
+
   # Fediverse::Inbox.register_handler("Create", "*", ActivityPub::ActorActivityHandler, :handle_create_activity)
   # Fediverse::Inbox.register_handler("Update", "*", ActivityPub::ActorActivityHandler, :handle_update_activity)
   Fediverse::Inbox.register_handler("Like", "*", Federation::LikeActivityHandler, :handle_like_activity)

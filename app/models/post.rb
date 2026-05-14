@@ -4,13 +4,9 @@ class Post < ApplicationRecord
   include Sketchable
   include Federails::DataEntity
 
-  acts_as_federails_data handles: "Note",
-                         actor_entity_method: :site
-
-  delegated_type :postable, types: %w[Note Article]
-
   belongs_to :site
-  belongs_to :user
+  belongs_to :user, optional: true
+  delegated_type :postable, types: %w[Note Article]
 
   validates :postable, presence: true
 
@@ -34,6 +30,7 @@ class Post < ApplicationRecord
 
   def self.from_activitypub_object(hash)
     {
+      federated_url: hash["id"],
       content: hash["content"]
     }
   end
@@ -51,6 +48,10 @@ class Post < ApplicationRecord
 
   def update_announces_count!
     update! announces_count: Federails::Activity.where(action: "Announce", entity: self).count
+  end
+
+  def local?
+    federated_url.blank?
   end
 
   private
