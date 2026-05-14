@@ -11,7 +11,7 @@ class ActorPresenter < BasePresenter
     local? ? record.entity.logo_url(host: nil) : record.extensions.dig("icon", "url")
   end
 
-  def local_profile_path
+  def panel_profile_path
     id = "@#{record.username}@#{record.server}"
     Rails.application.routes.url_helpers.panel_actor_path(id)
   end

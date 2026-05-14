@@ -1,9 +1,12 @@
 module Panel
   class ActorsController < PanelController
+    include Pagy::Method
+
     def show
       @actor = Federails::Actor.find_by_account(params[:id])
+      raise ActiveRecord::RecordNotFound if @actor.nil?
 
-      @posts = Post.where(federails_actor: @actor).freshly_published_first.page(params[:page])
+      @pagy, @posts = pagy(Post.where(federails_actor: @actor).freshly_published_first)
     end
   end
 end

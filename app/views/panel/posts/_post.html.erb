@@ -7,7 +7,7 @@
         <%= image_tag actor_presenter.avatar_url || 'https://mockmind-api.uifaces.co/content/human/80.jpg', class: "w-10 h-10 rounded-full mr-3" %>
 
         <span class="font-bold">
-          <%= link_to actor_presenter.name_or_username, actor_presenter.local_profile_path %>
+          <%= link_to actor_presenter.name_or_username, actor_presenter.panel_profile_path %>
         </span>
       </div>
 
