@@ -1,69 +1,77 @@
 <% actor_presenter = ActorPresenter.new(post.federails_actor) %>
 
-<article class="bg-white rounded-lg mb-6 border-b">
-  <header>
-    <div href="" class="flex items-center py-4 px-2 pt-0">
-      <div class="flex items-center">
-        <%= image_tag actor_presenter.avatar_url || 'https://mockmind-api.uifaces.co/content/human/80.jpg', class: "w-10 h-10 rounded-full mr-3" %>
+<% if post.postable.is_a?(Announce) %>
+  <span class="text-sm text-gray-500 mb-2 flex items-center gap-1">
+    <%= tabler_icon :refresh, size: 16 %> Podbite przez <%= link_to actor_presenter.name_or_username, actor_presenter.panel_profile_path %>
+  </span>
 
-        <span class="font-bold">
-          <%= link_to actor_presenter.name_or_username, actor_presenter.panel_profile_path %>
-        </span>
-      </div>
+  <%= render post.postable.announced_post %>
+<% else %>
+  <article class="bg-white rounded-lg mb-6 border-b">
+    <header>
+      <div href="" class="flex items-center py-4 px-2 pt-0">
+        <div class="flex items-center">
+          <%= image_tag actor_presenter.avatar_url || 'https://mockmind-api.uifaces.co/content/human/80.jpg', class: "w-10 h-10 rounded-full mr-3" %>
 
-      <div class="ml-auto flex items-center gap-4">
-        <a href="#" class="text-blue-500">Follow</a>
-        <div data-controller="dropdown" data-dropdown-placement-value="bottom-end" class="relative inline-block">
-          <button
-            type="button"
-            data-dropdown-target="button"
-            data-action="click->dropdown#toggle"
-            class="inline-flex items-center text-gray-600 hover:bg-gray-100 p-2 rounded-full h-10 w-10"
-          >
-            <%= tabler_icon :dots, size: 28 %>
-          </button>
+          <span class="font-bold">
+            <%= link_to actor_presenter.name_or_username, actor_presenter.panel_profile_path %>
+          </span>
+        </div>
 
-          <div
-            data-dropdown-target="menu"
-            class="hidden bg-white border rounded shadow-md p-2 min-w-48"
-          >
-            <time class="block px-4 py-2 text-gray-500 hover:bg-gray-100" datetime="<%= post.published_at&.iso8601 %>" title="<%= post.published_at %>"><%= post.published_at&.to_fs(:short) %></time>
-            <a href="<%= edit_panel_post_path(post) %>" class="block px-4 py-2 hover:bg-gray-100">Edit</a>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Stop following <%= post.federails_actor.name || post.federails_actor.username %></a>
-            <a href="#" class="text-red-500 block px-4 py-2 hover:bg-gray-100">Delete</a>
+        <div class="ml-auto flex items-center gap-4">
+          <a href="#" class="text-blue-500">Follow</a>
+          <div data-controller="dropdown" data-dropdown-placement-value="bottom-end" class="relative inline-block">
+            <button
+              type="button"
+              data-dropdown-target="button"
+              data-action="click->dropdown#toggle"
+              class="inline-flex items-center text-gray-600 hover:bg-gray-100 p-2 rounded-full h-10 w-10"
+            >
+              <%= tabler_icon :dots, size: 28 %>
+            </button>
+
+            <div
+              data-dropdown-target="menu"
+              class="hidden bg-white border rounded shadow-md p-2 min-w-48"
+            >
+              <time class="block px-4 py-2 text-gray-500 hover:bg-gray-100" datetime="<%= post.published_at&.iso8601 %>" title="<%= post.published_at %>"><%= post.published_at&.to_fs(:short) %></time>
+              <a href="<%= edit_panel_post_path(post) %>" class="block px-4 py-2 hover:bg-gray-100">Edit</a>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">Stop following <%= post.federails_actor.name || post.federails_actor.username %></a>
+              <a href="#" class="text-red-500 block px-4 py-2 hover:bg-gray-100">Delete</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <%= render post.postable, post: post %>
+    <%= render post.postable, post: post %>
 
-  <%# This is disabled until we make it in a smarter way. Otherwise, when someone on mastodon puts a list of hashtags
-    # at the end of the Note, both the ones in content and these are being displayed.
-    # Or simply display it only for local posts for now. @todo %>
-  <% if false %>
-    <div class="p-4 pt-0 px-2">
-      <%
-        tag_struct = Struct.new(:name, :url)
+    <%# This is disabled until we make it in a smarter way. Otherwise, when someone on mastodon puts a list of hashtags
+      # at the end of the Note, both the ones in content and these are being displayed.
+      # Or simply display it only for local posts for now. @todo %>
+    <% if false %>
+      <div class="p-4 pt-0 px-2">
+        <%
+          tag_struct = Struct.new(:name, :url)
 
-        if post.local?
-          tags = []
-        else
-          tags = post.raw_data["tag"]&.select { |tag| tag["type"] == "Hashtag" }&.map { |tag| tag_struct.new(tag["name"], tag["href"]) } || []
-        end
-      %>
+          if post.local?
+            tags = []
+          else
+            tags = post.raw_data["tag"]&.select { |tag| tag["type"] == "Hashtag" }&.map { |tag| tag_struct.new(tag["name"], tag["href"]) } || []
+          end
+        %>
 
-      <% tags.each do |tag| %>
-        <%= link_to tag.name, tag.url, class: "mr-2 text-gray-500 hover:underline" %>
-      <% end %>
-    </div>
-  <% end %>
+        <% tags.each do |tag| %>
+          <%= link_to tag.name, tag.url, class: "mr-2 text-gray-500 hover:underline" %>
+        <% end %>
+      </div>
+    <% end %>
 
-  <footer class="flex items-center place-content-between p-4 px-2 pt-0 text-gray-600">
-    <a href="#"><%= tabler_icon :message_circle, size: 28 %></a>
-    <a href="#" class="flex items-center gap-2 text-sm"><%= tabler_icon :refresh, size: 28 %> <%= post.announces_count %></a>
-    <a href="#" class="flex items-center gap-2 text-sm"><%= tabler_icon :heart, size: 28 %> <%= post.likes_count %></a>
-    <a href="#"><%= tabler_icon :share_2, size: 28 %></a>
-  </footer>
-</article>
+    <footer class="flex items-center place-content-between p-4 px-2 pt-0 text-gray-600">
+      <a href="#"><%= tabler_icon :message_circle, size: 28 %></a>
+      <a href="#" class="flex items-center gap-2 text-sm"><%= tabler_icon :refresh, size: 28 %> <%= post.announces_count %></a>
+      <a href="#" class="flex items-center gap-2 text-sm"><%= tabler_icon :heart, size: 28 %> <%= post.likes_count %></a>
+      <a href="#"><%= tabler_icon :share_2, size: 28 %></a>
+    </footer>
+  </article>
+<% end %>
