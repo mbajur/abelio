@@ -2,6 +2,8 @@ module Panel
   class ActorsController < PanelController
     include Pagy::Method
 
+    before_action :set_current_site_following_actor_ids
+
     def show
       @actor = find_actor
 

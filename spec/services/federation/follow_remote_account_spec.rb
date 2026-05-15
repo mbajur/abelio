@@ -9,7 +9,7 @@ describe Federation::FollowRemoteAccount do
     it "creates a following between local and remote actors" do
       service = described_class.new(local_actor: local_actor, remote_actor: remote_actor)
 
-      expect(Federails::Following).to receive(:create!).with(
+      expect(Federails::Following).to receive(:create_or_find_by!).with(
         actor: local_actor,
         target_actor: remote_actor
       ).and_return(following)

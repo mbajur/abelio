@@ -7,6 +7,6 @@ class Federation::FollowRemoteAccount
   end
 
   def call
-    Federails::Following.create! actor: local_actor, target_actor: remote_actor
+    Federails::Following.create_or_find_by!(actor: local_actor, target_actor: remote_actor)
   end
 end

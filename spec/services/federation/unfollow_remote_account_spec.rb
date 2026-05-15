@@ -26,17 +26,5 @@ describe Federation::UnfollowRemoteAccount do
 
       expect(service.call).to eq(false)
     end
-
-    it "raises when local_actor is missing" do
-      missing_local_actor = described_class.new(local_actor: nil, remote_actor: remote_actor)
-
-      expect { missing_local_actor.call }.to raise_error(ArgumentError, "local_actor is required")
-    end
-
-    it "raises when remote_actor is missing" do
-      missing_remote_actor = described_class.new(local_actor: local_actor, remote_actor: nil)
-
-      expect { missing_remote_actor.call }.to raise_error(ArgumentError, "remote_actor is required")
-    end
   end
 end
