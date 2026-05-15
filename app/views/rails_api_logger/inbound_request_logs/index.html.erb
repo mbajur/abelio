@@ -1,0 +1,25 @@
+<table class="table">
+  <thead>
+    <th>ID</th>
+    <th>Method</th>
+    <th>Code</th>
+    <th>Path</th>
+    <th>Started At</th>
+    <th>Ended At</th>
+    <th>Loggable</th>
+  </thead>
+
+  <% @inbound_request_logs.each do |request| %>
+    <tr>
+      <td><%= link_to request.id, main_app.rails_api_logger_inbound_request_log_path(request) %></td>
+      <td><%= request.method %></td>
+      <td><%= request.response_code %></td>
+      <td><code><%= request.path %></code></td>
+      <td><%= request.started_at %></td>
+      <td><%= request.ended_at %></td>
+      <td><%= [request.loggable_type, request.loggable_id].join(':') %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%== @pagy.series_nav(:bootstrap) %>
