@@ -2,7 +2,8 @@ module Abelio
   module FederailsPostableInitializer
     POSTABLE_TYPE_MAP = {
       "Note" => "Note",
-      "Article" => "Article"
+      "Article" => "Article",
+      "Announce" => "Announce"
     }.freeze
 
     def find_or_initialize(object_or_id)

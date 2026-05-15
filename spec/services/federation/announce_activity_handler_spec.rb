@@ -42,14 +42,17 @@ describe Federation::AnnounceActivityHandler do
       { "id" => local_url, "type" => "Note" }
     end
 
+    around do |example|
+      original_site = Current.site
+
+      Current.site = site
+      example.run
+      Current.site = original_site
+    end
+
     before do
-      allow(Federails::Utils::Host).to receive(:local_url?).and_return(true)
-      allow(Federails::Utils::Host).to receive(:local_route).and_return({
-        controller: "federails/server/published",
-        action: "show",
-        publishable_type: "posts",
-        id: post.id
-      })
+      allow(Federails::Utils::Object).to receive(:find_or_initialize!).and_call_original
+      allow(Federails::Utils::Object).to receive(:find_or_initialize!).with(local_url).and_return(post)
 
       stub_request(:get, remote_actor_url)
         .to_return(status: 200, body: remote_actor_hash.to_json, headers: { "Content-Type" => "application/activity+json" })
@@ -91,10 +94,27 @@ describe Federation::AnnounceActivityHandler do
         }.to change { post.reload.announces_count }.from(0).to(1)
       end
 
+      it "creates an Announce post for the activity" do
+        expect {
+          described_class.handle_announce_activity(activity_hash)
+        }.to change { Post.where(postable_type: "Announce").count }.by(1)
+
+        announce_post = Post.find_by!(federated_url: activity_hash["id"])
+        expect(announce_post.state).to eq("distant")
+        expect(announce_post.federails_actor.federated_url).to eq(remote_actor_url)
+        expect(announce_post.postable.announced_post).to eq(post)
+      end
+
       it "does not create a duplicate Announce activity for the same actor and post" do
         expect {
           2.times { described_class.handle_announce_activity(activity_hash) }
         }.to change { Federails::Activity.count }.by(1)
+      end
+
+      it "does not create duplicate announce posts for the same activity" do
+        expect {
+          2.times { described_class.handle_announce_activity(activity_hash) }
+        }.to change { Post.where(postable_type: "Announce").count }.by(1)
       end
 
       it "handles an Announce activity passed as an ID string" do
@@ -107,75 +127,36 @@ describe Federation::AnnounceActivityHandler do
       end
     end
 
-    context "when the object URL is not a local URL" do
-      before { allow(Federails::Utils::Host).to receive(:local_url?).and_return(false) }
+    context "when the announced object is remote" do
+      let(:remote_object_url) { "https://remote.example.com/@bob/112233" }
+      let(:remote_announced_post) { create(:post, state: :distant, federated_url: remote_object_url) }
 
-      it "raises 'Not a local ID' error" do
+      let(:activity_hash) do
+        super().merge(
+          "id" => "https://remote.example.com/users/alice/statuses/123/activity",
+          "object" => remote_object_url
+        )
+      end
+
+      before do
+        allow(Federails::Utils::Object).to receive(:find_or_initialize!).with(remote_object_url).and_return(remote_announced_post)
+      end
+
+      it "creates an Announce activity and post for the remote announced post" do
         expect {
           described_class.handle_announce_activity(activity_hash)
-        }.to raise_error("Not a local ID")
+        }.to change { Federails::Activity.count }.by(1)
+          .and change { Post.where(postable_type: "Announce").count }.by(1)
+
+        expect(Federails::Activity.last.entity).to eq(remote_announced_post)
+        expect(Post.find_by(federated_url: activity_hash["id"]).postable.announced_post).to eq(remote_announced_post)
       end
     end
 
-    context "when the local URL does not resolve to a post" do
+    context "when announced object cannot be resolved to a Post" do
       before do
-        allow(Federails::Utils::Host).to receive(:local_route).and_return({
-          controller: "federails/server/published",
-          action: "show",
-          publishable_type: "articles",
-          id: 123
-        })
-      end
-
-      it "raises ActiveRecord::RecordNotFound" do
-        expect {
-          described_class.handle_announce_activity(activity_hash)
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-
-    context "when the controller is not correct" do
-      before do
-        allow(Federails::Utils::Host).to receive(:local_route).and_return({
-          controller: "posts",
-          action: "show",
-          publishable_type: "posts",
-          id: post.id
-        })
-      end
-
-      it "raises ActiveRecord::RecordNotFound" do
-        expect {
-          described_class.handle_announce_activity(activity_hash)
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-
-    context "when the action is not show" do
-      before do
-        allow(Federails::Utils::Host).to receive(:local_route).and_return({
-          controller: "federails/server/published",
-          action: "index",
-          publishable_type: "posts",
-          id: post.id
-        })
-      end
-
-      it "raises ActiveRecord::RecordNotFound" do
-        expect {
-          described_class.handle_announce_activity(activity_hash)
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-
-    context "when the post does not exist" do
-      before do
-        allow(Federails::Utils::Host).to receive(:local_route).and_return({
-          controller: "federails/server/published",
-          action: "show",
-          publishable_type: "posts",
-          id: 99999
-        })
+        non_post_entity = create(:site)
+        allow(Federails::Utils::Object).to receive(:find_or_initialize!).with(local_url).and_return(non_post_entity)
       end
 
       it "raises ActiveRecord::RecordNotFound" do

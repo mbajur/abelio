@@ -6,7 +6,7 @@ class Post < ApplicationRecord
 
   belongs_to :site
   belongs_to :user, optional: true
-  delegated_type :postable, types: %w[Note Article]
+  delegated_type :postable, types: %w[Note Article Announce]
 
   validates :postable, presence: true
 
