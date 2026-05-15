@@ -6,6 +6,10 @@ end
 Rails.application.routes.draw do
   constraints authenticated_session do
     mount SolidErrors::Engine, at: "/solid_errors"
+
+    namespace :rails_api_logger do
+      resources :inbound_request_logs
+    end
   end
 
   mount Federails::Engine => "/"
