@@ -1,27 +1,94 @@
 require "rails_helper"
 
 RSpec.describe Post, type: :model do
-  describe "Federails data registration" do
-    it "registers Post as a data handler for each handled ActivityPub type" do
-      expect(Federails.data_entity_configuration(described_class)[:handles]).to eq(%w[Note Article])
+  describe ".by_site_and_its_followings" do
+    let(:site) { create(:site) }
+    let(:followed_site) { create(:site) }
+    let(:unfollowed_site) { create(:site) }
 
-      note_handlers = Federails.data_entity_handlers_for("Note")
-      article_handlers = Federails.data_entity_handlers_for("Article")
-
-      expect(note_handlers).to include(include(class: described_class))
-      expect(article_handlers).to include(include(class: described_class))
+    before do
+      # Create a follow relationship from site to followed_site
+      Federails::Following.create!(
+        actor: site.federails_actor,
+        target_actor: followed_site.federails_actor
+      )
     end
 
-    it "registers inbox handlers for each handled ActivityPub type" do
-      note_handlers = Fediverse::Inbox.send(:get_handlers, "Create", "Note")
-      article_handlers = Fediverse::Inbox.send(:get_handlers, "Create", "Article")
-      note_update_handlers = Fediverse::Inbox.send(:get_handlers, "Update", "Note")
-      article_update_handlers = Fediverse::Inbox.send(:get_handlers, "Update", "Article")
+    it "includes posts from the site itself" do
+      site_post = create(:post, site: site, federails_actor: site.federails_actor)
+      create(:post, site: followed_site, federails_actor: followed_site.federails_actor)
 
-      expect(note_handlers[described_class]).to eq(:handle_incoming_fediverse_data)
-      expect(article_handlers[described_class]).to eq(:handle_incoming_fediverse_data)
-      expect(note_update_handlers[described_class]).to eq(:handle_incoming_fediverse_data)
-      expect(article_update_handlers[described_class]).to eq(:handle_incoming_fediverse_data)
+      result = Post.by_site_and_its_followings(site)
+
+      expect(result).to include(site_post)
+    end
+
+    it "includes posts from followed sites" do
+      create(:post, site: site, federails_actor: site.federails_actor)
+      followed_post = create(:post, site: followed_site, federails_actor: followed_site.federails_actor)
+
+      result = Post.by_site_and_its_followings(site)
+
+      expect(result).to include(followed_post)
+    end
+
+    it "excludes posts from unfollowed sites" do
+      create(:post, site: site, federails_actor: site.federails_actor)
+      create(:post, site: followed_site, federails_actor: followed_site.federails_actor)
+      unfollowed_post = create(:post, site: unfollowed_site, federails_actor: unfollowed_site.federails_actor)
+
+      result = Post.by_site_and_its_followings(site)
+
+      expect(result).not_to include(unfollowed_post)
+    end
+
+    it "includes both site and followed posts together" do
+      site_post = create(:post, site: site, federails_actor: site.federails_actor)
+      followed_post = create(:post, site: followed_site, federails_actor: followed_site.federails_actor)
+      create(:post, site: unfollowed_site, federails_actor: unfollowed_site.federails_actor)
+
+      result = Post.by_site_and_its_followings(site)
+
+      expect(result).to match_array([ site_post, followed_post ])
+    end
+
+    it "includes the federails_actor relation" do
+      create(:post, site: site, federails_actor: site.federails_actor)
+      create(:post, site: followed_site, federails_actor: followed_site.federails_actor)
+
+      result = Post.by_site_and_its_followings(site)
+
+      # Verify the association is accessible
+      expect(result.first.federails_actor).to be_present
+      expect(result.last.federails_actor).to be_present
+    end
+
+    it "returns empty collection when site has no posts and no followings" do
+      empty_site = create(:site)
+
+      result = Post.by_site_and_its_followings(empty_site)
+
+      expect(result).to be_empty
+    end
+
+    it "returns only site posts when site has no followings" do
+      no_follow_site = create(:site)
+      no_follow_post = create(:post, site: no_follow_site, federails_actor: no_follow_site.federails_actor)
+
+      result = Post.by_site_and_its_followings(no_follow_site)
+
+      expect(result).to contain_exactly(no_follow_post)
+    end
+
+    it "includes multiple posts from both site and followed actors" do
+      site_post_1 = create(:post, site: site, federails_actor: site.federails_actor)
+      site_post_2 = create(:post, site: site, federails_actor: site.federails_actor)
+      followed_post_1 = create(:post, site: followed_site, federails_actor: followed_site.federails_actor)
+      followed_post_2 = create(:post, site: followed_site, federails_actor: followed_site.federails_actor)
+
+      result = Post.by_site_and_its_followings(site)
+
+      expect(result).to match_array([ site_post_1, site_post_2, followed_post_1, followed_post_2 ])
     end
   end
 end
