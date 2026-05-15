@@ -16,15 +16,11 @@ class Post < ApplicationRecord
     initialized: "initialized",
     draft: "draft",
     published: "published",
-    sketch: "sketch"
+    sketch: "sketch",
+    distant: "distant"
   }
 
   scope :freshly_published_first, -> { order(published_at: :desc) }
-  scope :by_site_and_its_followings, ->(site) {
-    target_actor_ids = Federails::Following.where(actor: site.federails_actor).select(:target_actor_id)
-    where("federails_actor_id = ? OR federails_actor_id IN (?)", site.federails_actor.id, target_actor_ids)
-      .includes(:federails_actor)
-  }
 
   after_commit :touch_published_at, on: :update, if: -> { saved_change_to_state? && published? }
 

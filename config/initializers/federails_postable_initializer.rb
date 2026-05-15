@@ -18,6 +18,7 @@ module Abelio
       entity.raw_data = object
       entity.published_at = published_at_from_object(object)
       entity.site = Current.site
+      entity.state = Post.states[:distant]
       entity
     end
 
