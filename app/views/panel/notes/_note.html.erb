@@ -22,7 +22,7 @@
   <% end %>
 <% else %>
   <div class="mb-6 text-lg">
-    <div class="grid grid-column gap-1">
+    <div class="grid grid-column gap-1 mb-6">
       <% if presenter.media.size > 2 %>
         <div class="overflow-x-auto mb-6">
           <div class="flex flex-nowrap gap-1">
@@ -38,7 +38,14 @@
       <% else %>
         <% presenter.media.each do |media| %>
           <%= link_to media.url do %>
-            <%= image_tag media.preview_url, width: media.width, height: media.height %>
+            <% if media.type.starts_with?('video/') %>
+              <video controls class="max-w-full">
+                <source src="<%= media.url %>" type="<%= media.type %>">
+                Your browser does not support the video tag.
+              </video>
+            <% else %>
+              <%= image_tag media.preview_url, width: media.width, height: media.height %>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>

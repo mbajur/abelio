@@ -1,5 +1,5 @@
 class NotePresenter < BasePresenter
-  Media = Struct.new(:url, :preview_url, :width, :height)
+  Media = Struct.new(:url, :preview_url, :type, :width, :height)
 
   def content
     local? ? "Render blocks" : record.content
@@ -17,6 +17,7 @@ class NotePresenter < BasePresenter
         Media.new(
           attachment["url"],
           attachment["url"],
+          attachment["mediaType"],
           attachment["width"],
           attachment["height"]
         )
