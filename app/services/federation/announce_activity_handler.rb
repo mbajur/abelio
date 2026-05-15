@@ -14,6 +14,32 @@ class Federation::AnnounceActivityHandler
     private
 
     def resolve_announced_post(object_or_id)
+      object_url = object_or_id.is_a?(Hash) ? object_or_id["id"] : object_or_id
+
+      if Federails::Utils::Host.local_url?(object_url)
+        resolve_local_post(object_url)
+      else
+        resolve_remote_post(object_or_id)
+      end
+    end
+
+    def resolve_local_post(object_url)
+      puts "Resolving local post for URL: #{object_url}"
+
+      local_route = Federails::Utils::Host.local_route(object_url)
+      puts "Local route resolved: #{local_route.inspect}"
+
+      raise ActiveRecord::RecordNotFound unless local_route&.fetch(:controller, nil) == "federails/server/published" &&
+        local_route[:action] == "show" &&
+        local_route[:publishable_type] == "posts"
+
+      puts "Try to find post with ID: #{local_route[:id]}"
+      Post.find(local_route[:id])
+    end
+
+    def resolve_remote_post(object_or_id)
+      puts "Resolving remote post for URL: #{object_or_id}"
+
       post = Federails::Utils::Object.find_or_initialize!(object_or_id)
       raise ActiveRecord::RecordNotFound unless post.is_a?(Post)
 

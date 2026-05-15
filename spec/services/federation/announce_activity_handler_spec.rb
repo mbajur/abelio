@@ -51,8 +51,13 @@ describe Federation::AnnounceActivityHandler do
     end
 
     before do
-      allow(Federails::Utils::Object).to receive(:find_or_initialize!).and_call_original
-      allow(Federails::Utils::Object).to receive(:find_or_initialize!).with(local_url).and_return(post)
+      allow(Federails::Utils::Host).to receive(:local_url?).and_return(true)
+      allow(Federails::Utils::Host).to receive(:local_route).and_return({
+        controller: "federails/server/published",
+        action: "show",
+        publishable_type: "posts",
+        id: post.id
+      })
 
       stub_request(:get, remote_actor_url)
         .to_return(status: 200, body: remote_actor_hash.to_json, headers: { "Content-Type" => "application/activity+json" })
@@ -139,6 +144,9 @@ describe Federation::AnnounceActivityHandler do
       end
 
       before do
+        allow(Federails::Utils::Host).to receive(:local_url?).and_return(false)
+        allow(Fediverse::Request).to receive(:dereference).and_call_original
+        allow(Fediverse::Request).to receive(:dereference).with(remote_object_url).and_return({ "id" => remote_object_url, "type" => "Note" })
         allow(Federails::Utils::Object).to receive(:find_or_initialize!).with(remote_object_url).and_return(remote_announced_post)
       end
 
@@ -153,16 +161,58 @@ describe Federation::AnnounceActivityHandler do
       end
     end
 
-    context "when announced object cannot be resolved to a Post" do
+    context "when the local URL does not resolve to a post" do
       before do
-        non_post_entity = create(:site)
-        allow(Federails::Utils::Object).to receive(:find_or_initialize!).with(local_url).and_return(non_post_entity)
+        allow(Federails::Utils::Host).to receive(:local_route).and_return({
+          controller: "federails/server/published",
+          action: "show",
+          publishable_type: "articles",
+          id: 123
+        })
       end
 
       it "raises ActiveRecord::RecordNotFound" do
         expect {
           described_class.handle_announce_activity(activity_hash)
         }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when the post does not exist locally" do
+      before do
+        allow(Federails::Utils::Host).to receive(:local_route).and_return({
+          controller: "federails/server/published",
+          action: "show",
+          publishable_type: "posts",
+          id: 99999
+        })
+      end
+
+      it "raises ActiveRecord::RecordNotFound" do
+        expect {
+          described_class.handle_announce_activity(activity_hash)
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    # Regression: Federails::Utils::Object.find_or_initialize! for local URLs calls
+    # Federails.data_entity_handled_on(:posts) which returns nil because Post is not
+    # registered with publishable_type: :posts — only Note/Article are. Local objects
+    # must be resolved via routing, not the object pipeline.
+    context "regression: Announce of a local post when Federails::Utils::Object cannot resolve 'posts' type" do
+      before do
+        # Simulate the production failure: Utils::Object pipeline returns nil for 'posts'
+        allow(Federails::Utils::Object).to receive(:find_or_initialize!).and_return(nil)
+      end
+
+      it "still resolves the local post via routing without hitting Federails::Utils::Object" do
+        expect(Federails::Utils::Object).not_to receive(:find_or_initialize!)
+
+        expect {
+          described_class.handle_announce_activity(activity_hash)
+        }.to change { Federails::Activity.count }.by(1)
+
+        expect(Federails::Activity.last.entity).to eq(post)
       end
     end
   end
