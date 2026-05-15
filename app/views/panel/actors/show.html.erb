@@ -24,10 +24,25 @@
     </div>
   </div>
 
-  <div class="flex gap-4 max-w-2xl mx-auto mb-12">
-    <a href="#" class="flex-1 px-4 py-2 bg-black text-white text-center hover:bg-gray-800">Follow</a>
-    <a href="#" class="flex-1 px-4 py-2 border text-center hover:bg-gray-100">Send a message</a>
-  </div>
+  <% if Current.site.federails_actor != @actor %>
+    <div class="flex gap-4 max-w-2xl mx-auto mb-12">
+      <% if Current.site_following_actor_ids.include?(@actor.id) %>
+        <%= button_to 'Unfollow',
+          unfollow_panel_actor_path(actor_presenter.username_with_server),
+          method: :delete,
+          form: { class: 'flex-1' },
+          class: 'w-full px-4 py-2 bg-black text-white text-center hover:bg-gray-800' %>
+      <% else %>
+        <%= button_to 'Follow',
+          follow_panel_actor_path(actor_presenter.username_with_server),
+          method: :post,
+          form: { class: 'flex-1' },
+          class: 'w-full px-4 py-2 bg-black text-white text-center hover:bg-gray-800' %>
+      <% end %>
+
+      <a href="#" class="flex-1 px-4 py-2 border text-center hover:bg-gray-100">Send a message</a>
+    </div>
+  <% end %>
 
   <%= render collection: @posts, partial: 'panel/posts/post', as: :post %>
 <% end %>
