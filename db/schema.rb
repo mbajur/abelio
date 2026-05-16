@@ -49,16 +49,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_194132) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "announces", force: :cascade do |t|
-    t.integer "announced_post_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "postable_id", null: false
-    t.string "postable_type", null: false
-    t.datetime "updated_at", null: false
-    t.index ["announced_post_id"], name: "index_announces_on_announced_post_id"
-    t.index ["postable_type", "postable_id"], name: "index_announces_on_postable"
-  end
-
   create_table "articles", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
