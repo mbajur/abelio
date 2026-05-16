@@ -12,4 +12,4 @@ Shrine.plugin :restore_cached_data # re-extract metadata when attaching a cached
 Shrine.plugin :upload_endpoint
 Shrine.plugin :determine_mime_type
 Shrine.plugin :store_dimensions
-Shrine.plugin :url_options, store: { host: "https://#{ENV.fetch('DOMAIN')}" }
+Shrine.plugin :url_options, store: { host: "//#{ENV.fetch('DOMAIN')}" }

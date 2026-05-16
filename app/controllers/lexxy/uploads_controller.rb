@@ -102,13 +102,12 @@ module Lexxy
         content_type: content_type,
         byte_size: byte_size,
         previewable: previewable_content_type?(content_type),
-        # url: main_app.lexxy_medium_blob_path(signed_id: signed_id, filename: filename)
         url: medium.file_url(host: nil)
       }
     end
 
     def previewable_content_type?(content_type)
-      content_type.start_with?("image/", "video/", "audio/") || content_type == "application/pdf"
+      content_type.start_with?("image/")
     end
   end
 end

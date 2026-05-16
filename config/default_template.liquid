@@ -88,18 +88,7 @@
       [&_p+h3]:mt-5
       [&_p+h4]:mt-6
     ">
-    {% for block in post.content_blocks %}
-    {% if block.type == 'rich_text' %}
-    {{ block.content }}
-    {% endif %}
-
-    {% if block.type == 'image_set' %}
-    {% for image in block.images %}
-    <p><img src="{{ image.file.url }}" width="{{ image.file.metadata.width }}"
-        height="{{ image.file.metadata.height }}" /></p>
-    {% endfor %}
-    {% endif %}
-    {% endfor %}
+    {{ post.content }}
 
     <!-- Interactions -->
     <div class="flex items-center justify-center gap-x-10 text-gray-400 text-md mt-12">

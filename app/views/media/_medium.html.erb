@@ -1,10 +1,20 @@
 <% metadata = medium.file.metadata || {} %>
-<% content_type = metadata["mime_type"] || medium.file.mime_type.to_s %>
 
-<% if content_type.start_with?("image/") %>
-  <%= image_tag medium.file.url, alt: (metadata["filename"] || "attachment") %>
-<% else %>
-  <a href="<%= medium.file.url %>" target="_blank" rel="noopener noreferrer">
-    <%= metadata["filename"] || "attachment" %>
-  </a>
-<% end %>
+<figure class="attachment attachment--<%= medium.representable? ? "preview" : "file" %> attachment--<%= File.extname(metadata["filename"] || "") %>">
+  <% if medium.representable? %>
+    <%= image_tag medium.file_url(host: nil), alt: (metadata["filename"] || "attachment") %>
+  <% else %>
+    <a href="<%= medium.file_url(host: nil) %>" target="_blank" rel="noopener noreferrer">
+      <%= metadata["filename"] || "attachment" %>
+    </a>
+  <% end %>
+
+  <figcaption class="attachment__caption mt-2!">
+    <% if caption = medium.try(:caption) %>
+      <%= caption %>
+    <% else %>
+      <span class="attachment__name"><%= metadata["filename"] || "attachment" %></span>
+      <span class="attachment__size"><%= number_to_human_size metadata["size"] || 0 %></span>
+    <% end %>
+  </figcaption>
+</figure>

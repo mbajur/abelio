@@ -28,6 +28,7 @@ module Panel
       @post = current_site.posts.local_federails_entities.find(params[:id])
 
       if @post.update(post_params)
+        @post.publish if params[:publish] == "1"
         redirect_to panel_post_path(@post), notice: t(".success")
       else
         render :edit, status: :unprocessable_entity

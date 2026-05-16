@@ -8,12 +8,13 @@ class Post < ApplicationRecord
   belongs_to :user, optional: true
   delegated_type :postable, types: %w[Note Article]
 
+  has_rich_text :content
+
   validates :postable, presence: true
 
   delegate :blocks, to: :postable
 
   enum :state, {
-    initialized: "initialized",
     draft: "draft",
     published: "published",
     sketch: "sketch",
@@ -36,11 +37,15 @@ class Post < ApplicationRecord
     ::Federails::DataTransformer::Note.to_federation self, content: "Hardcoded content" # @todo unhardcode it
   end
 
+  def publish
+    update!(published_at: Time.current, state: "published")
+  end
+
   # Live editable posts does not have sketches created on edit. They are being
   # edited directly until they are published. After publishing, they are no
   # longer live editable.
   def live_editable?
-    sketch? || draft? || initialized?
+    sketch? || draft?
   end
 
   def update_likes_count!
@@ -52,7 +57,7 @@ class Post < ApplicationRecord
   end
 
   def local?
-    federated_url.blank?
+    attributes["federated_url"].blank?
   end
 
   private

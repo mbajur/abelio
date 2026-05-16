@@ -3,7 +3,11 @@ class PostPolicy < ApplicationPolicy
     user == record.user
   end
 
-  def create_draft?
-    record.initialized?
+  def save_draft?
+    record.local? && record.initialized?
+  end
+
+  def publish?
+    !record.published? && record.local?
   end
 end

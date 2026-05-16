@@ -1,5 +1,25 @@
-<%= render(PageComponent.new) do %>
-  <%= render "form", post: @post %>
+<%= render(PageComponent.new(title: "Edit Post")) do |page| %>
+  <% page.with_action do %>
+    <%= link_to "Back", panel_post_path(@post), class: 'mr-4 text-sm' %>
 
-  <%= link_to "Back", panel_posts_path %>
+    <% if policy(@post).publish? %>
+      <button form="post_form" type="submit" name="publish" value="1" class="text-sm bg-black text-white text-center p-4 py-2 gap-2 inline-flex items-center justify-center">
+        <%= tabler_icon :send, size: 16 %> Publish
+      </button>
+    <% end %>
+
+    <% if policy(@post).edit? %>
+      <button form="post_form" type="submit" class="text-sm bg-black text-white text-center p-4 py-2 gap-2 inline-flex items-center justify-center">
+        <%= tabler_icon :check, size: 16 %>
+
+        <% if @post.draft? %>
+          Save draft
+        <% else %>
+          Update
+        <% end %>
+      </button>
+    <% end %>
+  <% end %>
+
+  <%= render "form", post: @post %>
 <% end %>
