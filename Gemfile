@@ -92,3 +92,5 @@ gem "liquid", "~> 5.12"
 gem "solid_errors", "~> 0.7.0"
 
 gem "rails_api_logger", "~> 0.12.0"
+
+gem "lexxy", "~> 0.9.12.beta"

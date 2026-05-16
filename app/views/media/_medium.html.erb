@@ -1,0 +1,10 @@
+<% metadata = medium.file.metadata || {} %>
+<% content_type = metadata["mime_type"] || medium.file.mime_type.to_s %>
+
+<% if content_type.start_with?("image/") %>
+  <%= image_tag medium.file.url, alt: (metadata["filename"] || "attachment") %>
+<% else %>
+  <a href="<%= medium.file.url %>" target="_blank" rel="noopener noreferrer">
+    <%= metadata["filename"] || "attachment" %>
+  </a>
+<% end %>

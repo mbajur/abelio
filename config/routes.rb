@@ -10,6 +10,10 @@ Rails.application.routes.draw do
 
   mount Federails::Engine => "/"
 
+  post "lexxy/uploads", to: "lexxy/uploads#create", as: :lexxy_uploads
+  put "lexxy/media/:signed_id/:filename", to: "lexxy/uploads#upload", constraints: { signed_id: /[^\/]+/, filename: /[^\/]+/ }, format: false
+  get "lexxy/media/:signed_id/:filename", to: "lexxy/uploads#show", as: :lexxy_medium_blob, constraints: { signed_id: /[^\/]+/, filename: /[^\/]+/ }, format: false
+
   resource :session
   resources :passwords, param: :token
 

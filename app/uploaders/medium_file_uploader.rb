@@ -1,0 +1,2 @@
+class MediumFileUploader < Shrine
+end

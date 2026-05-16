@@ -36,3 +36,5 @@ pin "sortablejs" # @1.15.2
 pin "trix"
 pin "@rails/actiontext", to: "actiontext.esm.js"
 pin "@popperjs/core", to: "https://esm.sh/@popperjs/core@2.11.8"
+pin "lexxy", to: "lexxy.js"
+pin "@rails/activestorage", to: "activestorage.esm.js"

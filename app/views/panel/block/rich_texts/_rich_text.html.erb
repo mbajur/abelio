@@ -1,5 +1,5 @@
 <%= form_with model: block, url: panel_block_path(block), method: :patch, data: { controller: "block-form" } do |form| %>
   <%= form.fields_for :blockable do |blockable_form| %>
-    <%= blockable_form.rich_text_area :content, rows: 6, placeholder: 'Write something...', data: { action: "trix-change->block-form#submit" } %>
+    <%= blockable_form.rich_textarea :content, rows: 6, placeholder: 'Write something...', data: { action: "trix-change->block-form#submit" } %>
   <% end %>
 <% end %>

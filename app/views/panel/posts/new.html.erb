@@ -1,5 +1,8 @@
-<h1>New Post</h1>
+<% @max_width = '7xl' %>
+<% @col_start = 2 %>
 
-<%= render "form", post: @post %>
+<%= render(PageComponent.new) do %>
+  <%= render "form", post: @post %>
 
-<%= link_to "Back", panel_posts_path %>
+  <%= link_to "Back", panel_posts_path %>
+<% end %>

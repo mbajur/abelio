@@ -10,6 +10,9 @@
     </div>
   <% end %>
 
+  <%= form.label :content %>
+  <%= form.rich_text_area :content, data: { direct_upload_url: main_app.lexxy_uploads_path, blob_url_template: main_app.lexxy_medium_blob_path(":signed_id", ":filename") } %>
+
   <div class="actions">
     <%= form.submit %>
   </div>
