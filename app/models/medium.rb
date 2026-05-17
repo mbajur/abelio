@@ -6,6 +6,6 @@ class Medium < ApplicationRecord
   belongs_to :entity, polymorphic: true, optional: true
 
   def representable?
-    file.mime_type.start_with?("image/")
+    file.mime_type&.start_with?("image/")
   end
 end

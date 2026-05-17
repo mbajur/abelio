@@ -4,10 +4,10 @@ class PostPolicy < ApplicationPolicy
   end
 
   def save_draft?
-    record.local? && record.initialized?
+    user == record.user && record.local? && record.initialized?
   end
 
   def publish?
-    !record.published? && record.local?
+    user == record.user && !record.published? && record.local?
   end
 end
