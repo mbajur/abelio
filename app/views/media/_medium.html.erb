@@ -1,6 +1,6 @@
 <% metadata = medium.file.metadata || {} %>
 
-<figure class="attachment attachment--<%= medium.representable? ? "preview" : "file" %> attachment--<%= File.extname(metadata["filename"] || "") %>">
+<figure class="attachment attachment--<%= medium.representable? ? "preview" : "file" %> attachment--<%= File.extname(metadata["filename"] || "").delete_prefix(".") %>">
   <% if medium.representable? %>
     <%= image_tag medium.file_url(host: nil), alt: (metadata["filename"] || "attachment") %>
   <% else %>

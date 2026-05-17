@@ -53,7 +53,11 @@ module Lexxy
     private
 
     def locate_medium
-      current_site.media.find_signed!(params[:signed_id], for: "lexxy-medium")
+      medium = GlobalID::Locator.locate_signed(params[:signed_id], for: "lexxy-medium")
+      return unless medium.is_a?(Medium)
+      return unless medium.site_id == current_site.id
+
+      medium
     end
 
     def blob_params
