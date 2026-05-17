@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_15_194132) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_17_123909) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -78,26 +78,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_194132) do
 
   create_table "block_rich_texts", force: :cascade do |t|
     t.text "content"
-  end
-
-  create_table "blocks", force: :cascade do |t|
-    t.integer "blockable_id", null: false
-    t.string "blockable_type", null: false
-    t.integer "children_count", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.integer "depth", default: 0, null: false
-    t.integer "lft", null: false
-    t.integer "parent_id"
-    t.integer "resource_id", null: false
-    t.string "resource_type", null: false
-    t.integer "rgt", null: false
-    t.datetime "updated_at", null: false
-    t.index ["blockable_type", "blockable_id"], name: "index_blocks_on_blockable"
-    t.index ["depth"], name: "index_blocks_on_depth"
-    t.index ["lft"], name: "index_blocks_on_lft"
-    t.index ["parent_id"], name: "index_blocks_on_parent_id"
-    t.index ["resource_type", "resource_id"], name: "index_blocks_on_resource"
-    t.index ["rgt"], name: "index_blocks_on_rgt"
   end
 
   create_table "federails_activities", force: :cascade do |t|

@@ -20,11 +20,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :panel do
-    resources :posts, only: %i[show new create edit update] do
-      resources :blocks, only: %i[create destroy] do
-        post :refresh, on: :member
-      end
-    end
+    resources :posts, only: %i[show new create edit update]
 
     resources :activities, only: %i[index], path: :activity
     resource :settings, only: %i[edit update]
@@ -36,8 +32,6 @@ Rails.application.routes.draw do
 
       root to: redirect("panel/blog/posts")
     end
-
-    resources :blocks, only: %i[update]
 
     namespace :block do
       resources :images, only: %i[create destroy]

@@ -2,7 +2,7 @@ class NotePresenter < BasePresenter
   Media = Struct.new(:url, :preview_url, :type, :width, :height)
 
   def content
-    local? ? "Render blocks" : record.content
+    local? ? "Render content" : record.content
   end
 
   def media

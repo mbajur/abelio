@@ -12,8 +12,6 @@ class Post < ApplicationRecord
 
   validates :postable, presence: true
 
-  delegate :blocks, to: :postable
-
   enum :state, {
     draft: "draft",
     published: "published",
