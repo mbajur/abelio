@@ -1,5 +1,24 @@
-<h1>New Post</h1>
+<%= render(PageComponent.new(title: "Create post")) do |page| %>
+  <% page.with_action do %>
 
-<%= render "form", post: @post %>
+    <% if policy(@post).publish? %>
+      <button form="post_form" type="submit" name="publish" value="1" class="text-sm bg-black text-white text-center p-4 py-2 gap-2 inline-flex items-center justify-center">
+        <%= tabler_icon :send, size: 16 %> Publish
+      </button>
+    <% end %>
 
-<%= link_to "Back", panel_posts_path %>
+    <% if policy(@post).save_draft? %>
+      <button form="post_form" type="submit" class="text-sm bg-black text-white text-center p-4 py-2 gap-2 inline-flex items-center justify-center">
+        <%= tabler_icon :pencil, size: 16 %> Save draft
+      </button>
+    <% end %>
+
+    <% if policy(@post).edit? %>
+      <button form="post_form" type="submit" class="text-sm bg-black text-white text-center p-4 py-2 gap-2 inline-flex items-center justify-center">
+        <%= tabler_icon :check, size: 16 %> Update
+      </button>
+    <% end %>
+  <% end %>
+
+  <%= render "form", post: @post %>
+<% end %>

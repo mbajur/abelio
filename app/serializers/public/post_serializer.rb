@@ -10,7 +10,7 @@ module Public
         "likes_count" => resource.likes_count,
         "boosts_count" => resource.announces_count,
         "replies_count" => 0,
-        "content_blocks" => resource.blocks.where(depth: 0).order(:lft).map { |block| Public::BlockSerializer.new(block).data }
+        "content" => resource.content.to_s
       }
     end
   end

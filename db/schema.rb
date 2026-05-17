@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_13_154056) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_17_130107) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -55,39 +55,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_154056) do
     t.string "name"
     t.text "summary"
     t.datetime "updated_at", null: false
-  end
-
-  create_table "block_image_sets", force: :cascade do |t|
-  end
-
-  create_table "block_images", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.text "file_data"
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "block_rich_texts", force: :cascade do |t|
-    t.text "content"
-  end
-
-  create_table "blocks", force: :cascade do |t|
-    t.integer "blockable_id", null: false
-    t.string "blockable_type", null: false
-    t.integer "children_count", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.integer "depth", default: 0, null: false
-    t.integer "lft", null: false
-    t.integer "parent_id"
-    t.integer "resource_id", null: false
-    t.string "resource_type", null: false
-    t.integer "rgt", null: false
-    t.datetime "updated_at", null: false
-    t.index ["blockable_type", "blockable_id"], name: "index_blocks_on_blockable"
-    t.index ["depth"], name: "index_blocks_on_depth"
-    t.index ["lft"], name: "index_blocks_on_lft"
-    t.index ["parent_id"], name: "index_blocks_on_parent_id"
-    t.index ["resource_type", "resource_id"], name: "index_blocks_on_resource"
-    t.index ["rgt"], name: "index_blocks_on_rgt"
   end
 
   create_table "federails_activities", force: :cascade do |t|
@@ -172,6 +139,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_154056) do
     t.datetime "updated_at", null: false
     t.index ["client_reference"], name: "index_inbound_request_logs_on_client_reference"
     t.index ["loggable_type", "loggable_id"], name: "index_inbound_request_logs_on_loggable"
+  end
+
+  create_table "media", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "entity_id"
+    t.string "entity_type"
+    t.json "file_data"
+    t.integer "site_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["site_id"], name: "index_media_on_site_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -269,6 +246,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_154056) do
   add_foreign_key "federails_activities", "federails_actors", column: "actor_id"
   add_foreign_key "federails_followings", "federails_actors", column: "actor_id"
   add_foreign_key "federails_followings", "federails_actors", column: "target_actor_id"
+  add_foreign_key "media", "sites"
   add_foreign_key "posts", "federails_actors"
   add_foreign_key "posts", "posts", column: "sketch_of_id"
   add_foreign_key "posts", "sites"

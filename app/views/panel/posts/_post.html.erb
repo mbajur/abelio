@@ -27,8 +27,15 @@
             data-dropdown-target="menu"
             class="hidden bg-white border rounded shadow-md p-2 min-w-48"
           >
-            <time class="block px-4 py-2 text-gray-500 hover:bg-gray-100" datetime="<%= post.published_at&.iso8601 %>" title="<%= post.published_at %>"><%= post.published_at&.to_fs(:short) %></time>
-            <a href="<%= edit_panel_post_path(post) %>" class="block px-4 py-2 hover:bg-gray-100">Edit</a>
+            <%= link_to panel_post_path(post) do %>
+              <time class="block px-4 py-2 text-gray-500 hover:bg-gray-100" datetime="<%= post.published_at&.iso8601 %>" title="<%= post.published_at %>">
+                <%= post.published_at&.to_fs(:short) %>
+              </time>
+            <% end %>
+
+            <% if policy(post).edit? %>
+              <a href="<%= edit_panel_post_path(post) %>" class="block px-4 py-2 hover:bg-gray-100">Edit</a>
+            <% end %>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Stop following <%= post.federails_actor.name || post.federails_actor.username %></a>
             <a href="#" class="text-red-500 block px-4 py-2 hover:bg-gray-100">Delete</a>
           </div>
@@ -36,6 +43,13 @@
       </div>
     </div>
   </header>
+
+  <div class="
+    [&_p]:mb-4!
+    [&_p]:text-md
+    [&_p]:leading-6!">
+    <%= post.content %>
+  </div>
 
   <%= render post.postable, post: post %>
 
@@ -64,6 +78,6 @@
     <a href="#"><%= tabler_icon :message_circle, size: 28 %></a>
     <a href="#" class="flex items-center gap-2 text-sm"><%= tabler_icon :refresh, size: 28 %> <%= post.announces_count %></a>
     <a href="#" class="flex items-center gap-2 text-sm"><%= tabler_icon :heart, size: 28 %> <%= post.likes_count %></a>
-    <a href="#"><%= tabler_icon :share_2, size: 28 %></a>
+    <a href="#"><%= tabler_icon :send, size: 28 %></a>
   </footer>
 </article>

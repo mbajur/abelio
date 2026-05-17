@@ -10,17 +10,17 @@ Rails.application.routes.draw do
 
   mount Federails::Engine => "/"
 
+  post "lexxy/uploads", to: "lexxy/uploads#create", as: :lexxy_uploads
+  put "lexxy/media/:signed_id/:filename", to: "lexxy/uploads#upload", constraints: { signed_id: /[^\/]+/, filename: /[^\/]+/ }, format: false
+  get "lexxy/media/:signed_id/:filename", to: "lexxy/uploads#show", as: :lexxy_medium_blob, constraints: { signed_id: /[^\/]+/, filename: /[^\/]+/ }, format: false
+
   resource :session
   resources :passwords, param: :token
 
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :panel do
-    resources :posts, only: %i[show new create edit update] do
-      resources :blocks, only: %i[create destroy] do
-        post :refresh, on: :member
-      end
-    end
+    resources :posts, only: %i[show new create edit update]
 
     resources :activities, only: %i[index], path: :activity
     resource :settings, only: %i[edit update]
@@ -32,8 +32,6 @@ Rails.application.routes.draw do
 
       root to: redirect("panel/blog/posts")
     end
-
-    resources :blocks, only: %i[update]
 
     namespace :block do
       resources :images, only: %i[create destroy]

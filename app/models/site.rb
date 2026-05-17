@@ -9,6 +9,7 @@ class Site < ApplicationRecord
   acts_as_federails_actor username_field: :domain,
                           name_field: :name
 
+  has_many :media, class_name: "Medium", dependent: :destroy
   has_many :posts, dependent: :destroy
   belongs_to :template
 
