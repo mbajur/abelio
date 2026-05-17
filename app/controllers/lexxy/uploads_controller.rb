@@ -5,7 +5,7 @@ module Lexxy
 
     def create
       if params[:blob].present?
-        medium = Medium.create!
+        medium = Medium.create!(site: current_site)
         render json: direct_upload_payload(medium, blob_params), status: :created
       else
         file = params[:file]
@@ -13,6 +13,7 @@ module Lexxy
 
         medium = Medium.new
         medium.file = file
+        medium.site = current_site
         medium.save!
 
         render json: uploaded_blob_payload(medium)
@@ -52,8 +53,7 @@ module Lexxy
     private
 
     def locate_medium
-      medium = GlobalID::Locator.locate_signed(params[:signed_id], for: "lexxy-medium")
-      medium if medium.is_a?(Medium)
+      current_site.media.find_signed!(params[:signed_id], for: "lexxy-medium")
     end
 
     def blob_params

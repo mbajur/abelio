@@ -49,6 +49,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_194132) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "announces", force: :cascade do |t|
+    t.integer "announced_post_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "postable_id", null: false
+    t.string "postable_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["announced_post_id"], name: "index_announces_on_announced_post_id"
+    t.index ["postable_type", "postable_id"], name: "index_announces_on_postable"
+  end
+
   create_table "articles", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -176,8 +186,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_194132) do
 
   create_table "media", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "entity_id"
+    t.string "entity_type"
     t.json "file_data"
+    t.integer "site_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["site_id"], name: "index_media_on_site_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -276,6 +290,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_194132) do
   add_foreign_key "federails_activities", "federails_actors", column: "actor_id"
   add_foreign_key "federails_followings", "federails_actors", column: "actor_id"
   add_foreign_key "federails_followings", "federails_actors", column: "target_actor_id"
+  add_foreign_key "media", "sites"
   add_foreign_key "posts", "federails_actors"
   add_foreign_key "posts", "posts", column: "sketch_of_id"
   add_foreign_key "posts", "sites"

@@ -1,18 +1,18 @@
 module Abelio
   module LexxyShrineUploads
     def lexxy_rich_textarea_tag(name, value = nil, options = {}, &block)
-      apply_shrine_upload_options!(options)
+      apply_shrine_upload_options(options)
       super(name, value, options, &block)
     end
 
     def lexxy_rich_text_area_tag(name, value = nil, options = {}, &block)
-      apply_shrine_upload_options!(options)
+      apply_shrine_upload_options(options)
       super(name, value, options, &block)
     end
 
     private
 
-    def apply_shrine_upload_options!(options)
+    def apply_shrine_upload_options(options)
       options = options.deep_dup
       options[:data] ||= {}
 
