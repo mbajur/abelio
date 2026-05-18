@@ -12,11 +12,11 @@
   <% end %>
 
   <% if @liked_post_ids.include?(post.id) %>
-    <%= button_to unlike_panel_post_path(post), method: :delete, class: "flex items-center gap-2 text-sm text-red-500 font-bold" do %>
+    <%= button_to unlike_panel_post_path(post), method: :delete, class: "flex items-center gap-2 text-sm text-red-500 font-bold", aria: { label: "Unlike post" } do %>
       <%= tabler_icon :heart, size: 28 %> <%= post.likes_count %>
     <% end %>
   <% else %>
-    <%= button_to like_panel_post_path(post), method: :post, class: "flex items-center gap-2 text-sm" do %>
+    <%= button_to like_panel_post_path(post), method: :post, class: "flex items-center gap-2 text-sm", aria: { label: "Like post" } do %>
       <%= tabler_icon :heart, size: 28 %> <%= post.likes_count %>
     <% end %>
   <% end %>

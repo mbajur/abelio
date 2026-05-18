@@ -72,7 +72,7 @@ module Panel
       authorize @post
 
       Posts::Liker.new(@post, current_user).call
-      load_liked_post_ids!
+      load_liked_post_ids!([ @post.id ])
 
       respond_to do |format|
         format.turbo_stream
@@ -88,7 +88,7 @@ module Panel
       authorize @post
 
       Posts::Unliker.new(@post, current_user).call
-      load_liked_post_ids!
+      load_liked_post_ids!([ @post.id ])
 
       respond_to do |format|
         format.turbo_stream

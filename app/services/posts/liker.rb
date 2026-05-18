@@ -9,7 +9,7 @@ module Posts
       raise "Post already liked by this user" if post.liked_by?(user)
 
       Post.transaction do
-        federails_like = post.like!(actor: post.federails_actor)
+        federails_like = post.like!(actor: user.site.federails_actor)
         Like.create!(likeable: post, site: user.site, user: user, federails_activity: federails_like)
         post.increment!(:likes_count)
       end

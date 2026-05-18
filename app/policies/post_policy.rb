@@ -24,7 +24,7 @@ class PostPolicy < ApplicationPolicy
   end
 
   def unlike?
-    record.local? && record.likes.where(user: user).exists?
+    record.likes.where(user: user).exists?
   end
 
   private
