@@ -1,0 +1,9 @@
+<turbo-stream action="replace" targets=".<%= dom_id(@post, :footer) %>">
+  <template>
+    <%= render partial: "panel/posts/post_footer", formats: [:html], locals: { post: @post } %>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="remove" targets=".announced-in-<%= dom_id(@announce) %>">
+  <template></template>
+</turbo-stream>

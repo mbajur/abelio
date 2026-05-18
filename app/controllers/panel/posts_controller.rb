@@ -35,6 +35,33 @@ module Panel
       end
     end
 
+    def announce
+      @post = current_site.posts.find(params[:id])
+
+      Posts::Announcer.new(@post, current_user).call
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html do
+          redirect_back fallback_location: panel_post_path(@post),
+                        notice: t(".success")
+        end
+      end
+    end
+
+    def unannounce
+      @post = current_site.posts.find(params[:id])
+      @announce = Posts::Unannouncer.new(@post, current_user).call
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html do
+          redirect_back fallback_location: panel_post_path(@post),
+                        notice: t(".success")
+        end
+      end
+    end
+
     private
 
     def post_params

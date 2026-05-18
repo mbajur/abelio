@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_130107) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_17_142135) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -47,6 +47,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_130107) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "announces", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "articles", force: :cascade do |t|
@@ -176,6 +181,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_130107) do
   end
 
   create_table "posts", force: :cascade do |t|
+    t.integer "announced_post_id"
     t.integer "announces_count", default: 0
     t.text "content"
     t.datetime "created_at", null: false
@@ -191,6 +197,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_130107) do
     t.string "state", default: "initialized", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["announced_post_id"], name: "index_posts_on_announced_post_id"
     t.index ["federails_actor_id"], name: "index_posts_on_federails_actor_id"
     t.index ["postable_type", "postable_id"], name: "index_posts_on_postable"
     t.index ["site_id"], name: "index_posts_on_site_id"
@@ -248,6 +255,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_130107) do
   add_foreign_key "federails_followings", "federails_actors", column: "target_actor_id"
   add_foreign_key "media", "sites"
   add_foreign_key "posts", "federails_actors"
+  add_foreign_key "posts", "posts", column: "announced_post_id"
   add_foreign_key "posts", "posts", column: "sketch_of_id"
   add_foreign_key "posts", "sites"
   add_foreign_key "posts", "users"

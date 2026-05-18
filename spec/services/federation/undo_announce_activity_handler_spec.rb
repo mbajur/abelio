@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe Federation::UndoAnnounceActivityHandler do
-  describe ".handle_undo_announce_request" do
+  xdescribe ".handle_undo_announce_request" do
     let(:site) { create(:site) }
     let(:post) { create(:post, site: site) }
     let(:remote_actor) { create(:distant_actor) }

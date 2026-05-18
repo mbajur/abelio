@@ -1,0 +1,16 @@
+<footer class="flex items-center place-content-between p-4 px-2 pt-0 text-gray-600 <%= dom_id(post, :footer) %>">
+  <a href="#"><%= tabler_icon :message_circle, size: 28 %></a>
+
+  <% if post.announced_by?(current_user) %>
+    <%= button_to unannounce_panel_post_path(post), method: :delete, class: "flex items-center gap-2 text-sm text-yellow-500 font-bold" do %>
+      <%= tabler_icon :refresh, size: 28 %> <%= post.announces_count %>
+    <% end %>
+  <% else %>
+    <%= button_to announce_panel_post_path(post), method: :post, class: "flex items-center gap-2 text-sm" do %>
+      <%= tabler_icon :refresh, size: 28 %> <%= post.announces_count %>
+    <% end %>
+  <% end %>
+
+  <a href="#" class="flex items-center gap-2 text-sm"><%= tabler_icon :heart, size: 28 %> <%= post.likes_count %></a>
+  <a href="#"><%= tabler_icon :send, size: 28 %></a>
+</footer>

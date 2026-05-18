@@ -3,7 +3,7 @@ module Sketchable
 
   included do
     belongs_to :sketch_of, class_name: "Post", optional: true
-    has_many :sketches, class_name: "Post", foreign_key: :sketch_of_id, dependent: :nullify
+    has_many :sketches, class_name: "Post", foreign_key: :sketch_of_id
 
     scope :sketches, -> { where.not(sketch_of_id: nil) }
     scope :non_sketches, -> { where(sketch_of_id: nil) }
