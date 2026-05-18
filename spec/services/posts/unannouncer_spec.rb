@@ -25,7 +25,7 @@ describe Posts::Unannouncer do
       relation = instance_double("ActiveRecord::Relation")
 
       allow(post).to receive(:federails_activities).and_return(relation)
-      allow(relation).to receive(:where).with(action: "Announce").and_return(relation)
+      allow(relation).to receive(:where).with(action: "Announce", actor: post.federails_actor).and_return(relation)
       allow(relation).to receive(:last).and_return(activity)
     end
 

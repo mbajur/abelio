@@ -1,6 +1,6 @@
 class PostPolicy < ApplicationPolicy
   def edit?
-    user == record.user
+    owner? && record.local?
   end
 
   def save_draft?
@@ -12,6 +12,16 @@ class PostPolicy < ApplicationPolicy
   end
 
   def announce?
-    record.published? || !record.local?
+    owner? && record.published? && record.local?
+  end
+
+  def unannounce?
+    owner? && record.announced_in.exists? && record.local?
+  end
+
+  private
+
+  def owner?
+    user == record.user
   end
 end

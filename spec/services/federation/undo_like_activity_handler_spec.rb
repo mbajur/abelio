@@ -69,9 +69,7 @@ xdescribe Federation::UndoLikeActivityHandler do
 
       it "does not change Federails::Activity count" do
         expect {
-          pp Federails::Activity.all
           described_class.handle_undo_like_request(activity_hash)
-          pp Federails::Activity.all
         }.not_to change { Federails::Activity.count }
       end
 

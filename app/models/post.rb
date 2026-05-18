@@ -7,7 +7,7 @@ class Post < ApplicationRecord
   belongs_to :site
   belongs_to :user, optional: true
   belongs_to :announced_post, class_name: "Post", foreign_key: "announced_post_id", optional: true
-  has_many :announced_in, class_name: "Post", foreign_key: "announced_post_id"
+  has_many :announced_in, class_name: "Post", foreign_key: "announced_post_id", dependent: :destroy
   has_many :federails_activities, as: :entity, class_name: "Federails::Activity"
   delegated_type :postable, types: %w[Note Article Announce]
 

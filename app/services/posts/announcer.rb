@@ -6,6 +6,8 @@ module Posts
     end
 
     def call
+      raise "Post already announced by this user" if post.announced_by?(user)
+
       Post.transaction do
         announce = Post.new
         announce.site = post.site

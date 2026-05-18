@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_142135) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_18_124245) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -194,7 +194,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_142135) do
     t.json "raw_data", default: "{}"
     t.integer "site_id", null: false
     t.integer "sketch_of_id"
-    t.string "state", default: "initialized", null: false
+    t.string "state", default: "draft", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["announced_post_id"], name: "index_posts_on_announced_post_id"

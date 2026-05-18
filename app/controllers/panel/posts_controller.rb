@@ -37,8 +37,10 @@ module Panel
 
     def announce
       @post = current_site.posts.find(params[:id])
+      authorize @post
 
       Posts::Announcer.new(@post, current_user).call
+      load_announced_post_ids!
 
       respond_to do |format|
         format.turbo_stream
@@ -51,7 +53,10 @@ module Panel
 
     def unannounce
       @post = current_site.posts.find(params[:id])
+      authorize @post
+
       @announce = Posts::Unannouncer.new(@post, current_user).call
+      load_announced_post_ids!
 
       respond_to do |format|
         format.turbo_stream

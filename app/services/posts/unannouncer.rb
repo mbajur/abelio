@@ -8,7 +8,7 @@ module Posts
     def call
       Post.transaction do
         announce = Post.local_federails_entities.where(announced_post: post).last
-        post.federails_activities.where(action: "Announce").last.undo!
+        post.federails_activities.where(action: "Announce", actor: post.federails_actor).last.undo!
 
         announce.destroy!
         post.decrement!(:announces_count)

@@ -29,17 +29,25 @@ describe Posts::Announcer do
       expect { call_service }.to change { post.reload.announces_count }.from(0).to(1)
     end
 
-    it "always creates a new announce even if one already exists" do
-      create(
-        :post,
-        site: site,
-        user: user,
-        postable: Announce.create!,
-        announced_post: post,
-        state: :published
-      )
+    context "when the user has already announced the post" do
+      before do
+        create(
+          :post,
+          site: site,
+          user: user,
+          postable: Announce.create!,
+          announced_post: post,
+          state: :published
+        )
+      end
 
-      expect { call_service }.to change { Post.where(user: user, announced_post: post).count }.by(1)
+      it "raises an error" do
+        expect { call_service }.to raise_error("Post already announced by this user")
+      end
+
+      it "does not create a new announce post" do
+        expect { call_service rescue nil }.not_to change { Post.count }
+      end
     end
   end
 end
