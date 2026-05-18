@@ -9,6 +9,8 @@ module Panel
       @posts = local_published_posts
         .or(followed_distant_posts)
         .for_panel_listing
+
+      load_liked_post_ids!(@posts.map(&:id))
     end
   end
 end

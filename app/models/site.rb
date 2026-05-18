@@ -11,6 +11,7 @@ class Site < ApplicationRecord
 
   has_many :media, class_name: "Medium", dependent: :destroy
   has_many :posts, dependent: :destroy
+  has_many :likes, dependent: :destroy
   belongs_to :template
 
   validates :name, presence: true

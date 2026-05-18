@@ -13,4 +13,8 @@ class PanelController < ApplicationController
   def load_announced_post_ids!
     @announced_post_ids = current_site.posts.where(postable_type: "Announce").pluck(:announced_post_id)
   end
+
+  def load_liked_post_ids!(post_ids = [])
+    @liked_post_ids = current_site.likes.where(user: current_user, likeable_type: "Post", likeable_id: post_ids).pluck(:likeable_id)
+  end
 end

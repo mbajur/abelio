@@ -8,6 +8,7 @@ module Panel
       @actor = find_actor
 
       @pagy, @posts = pagy(Post.where(federails_actor: @actor).for_panel_listing)
+      load_liked_post_ids!(@posts.map(&:id))
     end
 
     def follow
