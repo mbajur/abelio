@@ -12,11 +12,11 @@ class PostPolicy < ApplicationPolicy
   end
 
   def announce?
-    owner? && record.published? && record.local?
+    record.published? && record.local?
   end
 
   def unannounce?
-    owner? && record.announced_in.exists? && record.local?
+    record.local? && record.announced_in.where(user: user).exists?
   end
 
   private

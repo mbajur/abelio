@@ -11,6 +11,7 @@ module Posts
         post.federails_activities.where(action: "Announce", actor: post.federails_actor).last.undo!
 
         announce.destroy!
+        announce.postable.destroy!
         post.decrement!(:announces_count)
 
         announce

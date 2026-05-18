@@ -23,6 +23,18 @@ class Post < ApplicationRecord
   }, default: "draft"
 
   scope :freshly_published_first, -> { order(published_at: :desc) }
+  scope :for_panel_listing, -> {
+    includes(
+      :federails_actor,
+      :postable,
+      :rich_text_content,
+      announced_post: [
+        :federails_actor,
+        :postable,
+        :rich_text_content
+      ]
+    ).freshly_published_first
+  }
 
   after_commit :touch_published_at, on: :update, if: -> { saved_change_to_state? && published? }
 
