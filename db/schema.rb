@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_18_124245) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_18_132753) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -146,6 +146,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_18_124245) do
     t.index ["loggable_type", "loggable_id"], name: "index_inbound_request_logs_on_loggable"
   end
 
+  create_table "likes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "federails_activity_id", null: false
+    t.integer "likeable_id", null: false
+    t.string "likeable_type", null: false
+    t.integer "site_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["federails_activity_id"], name: "index_likes_on_federails_activity_id"
+    t.index ["likeable_type", "likeable_id"], name: "index_likes_on_likeable"
+    t.index ["site_id"], name: "index_likes_on_site_id"
+    t.index ["user_id", "likeable_type", "likeable_id"], name: "index_likes_on_user_id_and_likeable_type_and_likeable_id", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
   create_table "media", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "entity_id"
@@ -253,6 +268,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_18_124245) do
   add_foreign_key "federails_activities", "federails_actors", column: "actor_id"
   add_foreign_key "federails_followings", "federails_actors", column: "actor_id"
   add_foreign_key "federails_followings", "federails_actors", column: "target_actor_id"
+  add_foreign_key "likes", "federails_activities"
+  add_foreign_key "likes", "sites"
+  add_foreign_key "likes", "users"
   add_foreign_key "media", "sites"
   add_foreign_key "posts", "federails_actors"
   add_foreign_key "posts", "posts", column: "announced_post_id"

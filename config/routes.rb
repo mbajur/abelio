@@ -23,6 +23,8 @@ Rails.application.routes.draw do
     resources :posts, only: %i[show new create edit update] do
       post :announce, on: :member
       delete :unannounce, on: :member
+      post :like, on: :member
+      delete :unlike, on: :member
     end
 
     resources :activities, only: %i[index], path: :activity

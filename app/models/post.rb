@@ -9,6 +9,8 @@ class Post < ApplicationRecord
   belongs_to :announced_post, class_name: "Post", foreign_key: "announced_post_id", optional: true
   has_many :announced_in, class_name: "Post", foreign_key: "announced_post_id", dependent: :destroy
   has_many :federails_activities, as: :entity, class_name: "Federails::Activity"
+  has_many :likes, as: :likeable, dependent: :destroy
+
   delegated_type :postable, types: %w[Note Article Announce]
 
   has_rich_text :content
@@ -47,6 +49,10 @@ class Post < ApplicationRecord
 
   def announced_by?(user)
     announced_in.exists?(user: user)
+  end
+
+  def liked_by?(user)
+    likes.where(user: user).exists?
   end
 
   def to_activitypub_object

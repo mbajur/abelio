@@ -12,11 +12,19 @@ class PostPolicy < ApplicationPolicy
   end
 
   def announce?
-    record.published? && record.local?
+    record.published?
   end
 
   def unannounce?
     record.local? && record.announced_in.where(user: user).exists?
+  end
+
+  def like?
+    record.published?
+  end
+
+  def unlike?
+    record.local? && record.likes.where(user: user).exists?
   end
 
   private

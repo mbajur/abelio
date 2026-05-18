@@ -67,6 +67,38 @@ module Panel
       end
     end
 
+    def like
+      @post = current_site.posts.find(params[:id])
+      authorize @post
+
+      Posts::Liker.new(@post, current_user).call
+      load_liked_post_ids!
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html do
+          redirect_back fallback_location: panel_post_path(@post),
+                        notice: t(".success")
+        end
+      end
+    end
+
+    def unlike
+      @post = current_site.posts.find(params[:id])
+      authorize @post
+
+      Posts::Unliker.new(@post, current_user).call
+      load_liked_post_ids!
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html do
+          redirect_back fallback_location: panel_post_path(@post),
+                        notice: t(".success")
+        end
+      end
+    end
+
     private
 
     def post_params
