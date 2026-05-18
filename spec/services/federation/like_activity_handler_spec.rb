@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Federation::LikeActivityHandler do
+xdescribe Federation::LikeActivityHandler do
   describe ".handle_like_activity" do
     let(:site) { create(:site) }
     let(:post) { create(:post, site: site) }

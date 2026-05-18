@@ -20,7 +20,10 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :panel do
-    resources :posts, only: %i[show new create edit update]
+    resources :posts, only: %i[show new create edit update] do
+      post :announce, on: :member
+      delete :unannounce, on: :member
+    end
 
     resources :activities, only: %i[index], path: :activity
     resource :settings, only: %i[edit update]

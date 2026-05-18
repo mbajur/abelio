@@ -7,7 +7,7 @@ module Panel
     def show
       @actor = find_actor
 
-      @pagy, @posts = pagy(Post.where(federails_actor: @actor).freshly_published_first)
+      @pagy, @posts = pagy(Post.where(federails_actor: @actor).for_panel_listing)
     end
 
     def follow

@@ -8,8 +8,7 @@ module Panel
 
       @posts = local_published_posts
         .or(followed_distant_posts)
-        .includes(:federails_actor)
-        .freshly_published_first
+        .for_panel_listing
     end
   end
 end
