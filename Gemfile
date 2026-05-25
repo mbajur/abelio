@@ -79,7 +79,7 @@ gem "awesome_nested_set", "~> 3.9"
 
 gem "tabler_icons_ruby", "~> 3.26"
 
-gem "view_component", "~> 4.9"
+gem "view_component", "~> 4.11"
 
 gem "active_link_to", "~> 1.0"
 
